@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import HeroScene from "../components/HeroScene"; // make sure this file exists
+import HeroScene from "../components/HeroScene";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -19,16 +19,17 @@ export default function Home() {
         id="home"
         className="relative overflow-hidden scroll-mt-24 flex min-h-screen flex-col items-center justify-center px-6 text-center"
       >
-        {/* 3D scene behind content */}
+        {/* 3D scene in the background */}
         <HeroScene />
 
-        {/* subtle glow behind logo */}
+        {/* soft glow behind logo */}
         <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
           <div className="h-72 w-72 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(148,163,184,0.12),transparent_60%)] blur-2xl" />
         </div>
 
         {/* animated logo */}
         <motion.div
+          className="relative z-10"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -48,18 +49,18 @@ export default function Home() {
         </motion.div>
 
         <motion.p
-          className="mt-4 text-xl text-gray-400"
+          className="relative z-10 mt-4 text-xl text-gray-400"
           initial="hidden"
           animate="show"
           variants={fadeUp}
           transition={{ delay: 0.1 }}
         >
-          Innovations • Productions • Beyond
+          Innovations &bull; Productions &bull; Beyond
         </motion.p>
 
         <motion.a
           href="#about"
-          className="mt-8 inline-block rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-gray-300"
+          className="relative z-10 mt-8 inline-block rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-gray-300"
           initial="hidden"
           animate="show"
           variants={fadeUp}
@@ -92,7 +93,7 @@ export default function Home() {
           transition={{ delay: 0.1 }}
         >
           We build premium digital experiences and creative products. Armored is
-          a family of brands—starting with <strong>Armored Productions</strong>—and
+          a family of brands&mdash;starting with <strong>Armored Productions</strong>&mdash;and
           expanding into specialized verticals like <em>Innovations</em> and more.
         </motion.p>
       </section>
@@ -140,9 +141,9 @@ export default function Home() {
           viewport={{ once: true, amount: 0.3 }}
           variants={fadeUp}
         >
-          <h2 className="text-2xl font-bold">Let’s build something armored.</h2>
+          <h2 className="text-2xl font-bold">Let&rsquo;s build something armored.</h2>
           <p className="mt-2 text-black/70">
-            Tell me about your project and timeline—I'll get back to you quickly.
+            Tell me about your project and timeline&mdash;I&rsquo;ll get back to you quickly.
           </p>
           <a
             href="mailto:hello@armored.example"
