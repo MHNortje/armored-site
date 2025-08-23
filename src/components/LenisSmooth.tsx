@@ -1,33 +1,28 @@
 "use client";
+
 import { useEffect } from "react";
 import Lenis from "lenis";
 
 export default function LenisSmooth() {
   useEffect(() => {
-    const lenis = new Lenis({ smoothWheel: true, smoothTouch: true });
+    // Create Lenis with default options (works across versions)
+    const lenis = new Lenis({
+      // If you later want to tweak, these are safe:
+      // duration: 1.2,
+      // lerp: 0.1,
+      // direction: "vertical",
+      // gestureDirection: "vertical",
+      // smooth: true,
+    });
 
-    // RAF loop
+    // Drive Lenis with our own RAF
     let rafId = requestAnimationFrame(function raf(time: number) {
       lenis.raf(time);
       rafId = requestAnimationFrame(raf);
     });
 
-    // Make in-page anchors use Lenis
-    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'));
-    const onClick = (e: MouseEvent) => {
-      const target = e.currentTarget as HTMLAnchorElement;
-      const id = target.getAttribute("href")!;
-      if (id.length > 1) {
-        e.preventDefault();
-        const el = document.querySelector(id);
-        if (el) lenis.scrollTo(el, { offset: -80 }); // account for sticky header height
-      }
-    };
-    links.forEach(a => a.addEventListener("click", onClick));
-
     return () => {
       cancelAnimationFrame(rafId);
-      links.forEach(a => a.removeEventListener("click", onClick));
       lenis.destroy();
     };
   }, []);
