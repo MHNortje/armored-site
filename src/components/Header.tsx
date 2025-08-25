@@ -13,7 +13,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("#home");
 
-  // Scroll spy to highlight current section
+  // Highlight the section currently in view
   useEffect(() => {
     const ids = ["home", "about", "services", "contact"];
     const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
@@ -36,10 +36,10 @@ export default function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[rgb(45,45,45)]/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        {/* Logo + Brand */}
+        {/* Logo + Brand (uses /Main_Logo-01.svg) */}
         <a href="#home" className="flex items-center gap-3">
           <Image
-            src="/Main_Logo-01.svg"  // ✅ your requested header logo
+            src="/Main_Logo-01.svg"   // ✅ exact file from /public
             alt="Armored Pangolin Logo"
             width={28}
             height={28}
