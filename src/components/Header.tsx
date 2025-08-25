@@ -13,7 +13,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("#home");
 
-  // Highlight the section currently in view
+  // Scroll spy
   useEffect(() => {
     const ids = ["home", "about", "services", "contact"];
     const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
@@ -36,27 +36,16 @@ export default function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[rgb(45,45,45)]/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        {/* Logo + Brand (uses /Main_Logo-01.svg) */}
-        <a href="#home" className="flex items-center gap-3">
+        {/* Logo ONLY */}
+        <a href="#home" className="flex items-center" aria-label="Armored Pangolin Home">
           <Image
-            src="/Main_Logo-01.svg"   // ✅ exact file from /public
-            alt="Armored Pangolin Logo"
-            width={28}
-            height={28}
+            src="/Main_Logo-01.svg"      // <== your icon in /public
+            alt="Armored Pangolin"
+            width={32}
+            height={32}
             priority
           />
-          <span
-            className="text-[rgb(220,220,220)] text-lg"
-            style={{ fontFamily: "Varien, Inter, system-ui, sans-serif" }}
-          >
-            Armored
-          </span>
-          <span
-            className="text-[rgb(115,115,115)] text-lg"
-            style={{ fontFamily: "Corbel, Inter, system-ui, sans-serif" }}
-          >
-            Pangolin
-          </span>
+          {/* No text next to the logo */}
         </a>
 
         {/* Desktop nav */}
