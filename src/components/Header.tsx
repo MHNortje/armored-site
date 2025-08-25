@@ -22,7 +22,7 @@ export default function Header() {
             Armored
           </span>
           <span className="font-[Corbel] text-[rgb(115,115,115)] text-xl">
-            Pangolin
+            PANGOLIN
           </span>
         </Link>
 

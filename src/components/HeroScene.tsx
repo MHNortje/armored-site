@@ -1,41 +1,18 @@
 "use client";
 
-import { Suspense, useMemo } from "react";
+import React, { Suspense, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, OrbitControls } from "@react-three/drei";
-
-/**
- * 3D logo model that gently rotates.
- */
-function PangolinModel() {
-  const { scene } = useGLTF("/models/armored.glb", true);
-
-  const model = useMemo(() => scene.clone(), [scene]);
-
-  useFrame((_, delta) => {
-    model.rotation.y += delta * 0.25; // rotation speed
-  });
-
-  return (
-    <primitive
-      object={model}
-      scale={2.2}            // bigger model
-      position={[0, -0.2, 0]}
-      rotation={[0, 0, 0]}
-    />
-  );
-}
+import { OrbitControls, useGLTF } from "@react-three/drei";
 
 export default function HeroScene() {
   return (
-    <div className="relative mx-auto w-full max-w-5xl">
+    <div className="relative w-full">
       <Canvas
         dpr={[1, 2]}
-        className="rounded-xl"
-        style={{ height: "680px" }}
+        className="rounded-none"
+        style={{ height: "80vh" }}
         camera={{ position: [0, 0, 4.2], fov: 30 }}
       >
-        {/* Dark gray background (r35 g35 b35) */}
         <color attach="background" args={["rgb(35,35,35)"]} />
 
         <ambientLight intensity={0.7} />
@@ -58,4 +35,13 @@ export default function HeroScene() {
   );
 }
 
-useGLTF.preload("/models/armored.glb");
+function PangolinModel() {
+  const { scene } = useGLTF("/models/armored.glb", true);
+  const model = useMemo(() => scene.clone(), [scene]);
+
+  useFrame((_, delta) => {
+    model.rotation.y += delta * 0.25;
+  });
+
+  return <primitive object={model} scale={3.2} position={[0, -0.2, 0]} />;
+}
