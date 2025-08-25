@@ -1,73 +1,57 @@
-// src/app/layout.tsx
 import "./globals.css";
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import LenisSmooth from "../components/LenisSmooth";
 import Header from "../components/Header";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  // ✅ Your primary domain
-  metadataBase: new URL("https://armoredpangolin.com"),
-
-  // Titles
-  title: {
-    default: "Armored",
-    template: "%s • Armored",
-  },
-
-  // Descriptions used by search / link previews
+  title: "Armored Pangolin",
   description: "Innovations • Productions • Beyond",
 
-  // SEO: canonical URL
-  alternates: {
-    canonical: "/",
-  },
-
-  // Open Graph (Facebook, LinkedIn, etc.)
+  // ✅ OpenGraph (used by Facebook, WhatsApp, LinkedIn, etc.)
   openGraph: {
-    type: "website",
-    url: "https://armoredpangolin.com",
-    siteName: "Armored",
-    title: "Armored",
+    title: "Armored Pangolin",
     description: "Innovations • Productions • Beyond",
+    url: "https://armoredpangolin.com",
+    siteName: "Armored Pangolin",
     images: [
-      // Optional: place an image at /public/og-image.jpg (1200x630 recommended)
-      { url: "/og-image.jpg", width: 1200, height: 630, alt: "Armored" },
+      {
+        url: "/og-image.jpg", // 1200x630 recommended
+        width: 1200,
+        height: 630,
+        alt: "Armored Pangolin Preview",
+      },
     ],
+    locale: "en_US",
+    type: "website",
   },
 
-  // Twitter card
+  // ✅ Twitter card (used by Twitter/X)
   twitter: {
     card: "summary_large_image",
-    title: "Armored",
+    title: "Armored Pangolin",
     description: "Innovations • Productions • Beyond",
-    images: ["/og-image.jpg"], // safe if the file exists; otherwise remove this line
+    images: ["/og-image.jpg"],
+    creator: "@yourhandle", // optional, add your Twitter handle
   },
 
-  // Icons (put these files in /public if you have them)
+  // ✅ Favicon + App icons
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-
-  // Basic robots settings
-  robots: {
-    index: true,
-    follow: true,
-  },
 };
 
-// Browser UI color on mobile
-export const viewport: Viewport = {
-  themeColor: "#2D2D2D",
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="bg-[rgb(45,45,45)] text-white antialiased">
+    <html lang="en">
+      <body className={inter.className}>
         <LenisSmooth />
         <Header />
         {children}
