@@ -4,47 +4,51 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Center, useGLTF, Html, Environment } from "@react-three/drei";
 import { Suspense, useRef } from "react";
 import { Group } from "three";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-function ArmoredModel({ rotate = true }: { rotate?: boolean }) {
-  const { scene } = useGLTF("/models/armored.glb"); // ensure file exists
-  const ref = useRef<Group>(null);
+// 3D model (always rotates)
+function ArmoredModel() {
+  const { scene } = useGLTF("/models/armored.glb"); // make sure this exists
+  const pivot = useRef<Group>(null);
+
   useFrame((_, d) => {
-    if (rotate && ref.current) ref.current.rotation.y += d * 0.35;
+    if (pivot.current) pivot.current.rotation.y += d * 0.45; // faster, always on
   });
+
   return (
-    <Center ref={ref} disableZ>
-      <primitive object={scene} />
-    </Center>
+    // Outer group is the rotation pivot; Center re-centers the model visually
+    <group ref={pivot} scale={[1.8, 1.8, 1.8]}> {/* 🔥 make it a LOT bigger */}
+      <Center disableZ>
+        <primitive object={scene} />
+      </Center>
+    </group>
   );
 }
 useGLTF.preload("/models/armored.glb");
 
 export default function HeroScene() {
-  const reduce = useReducedMotion();
-
   return (
     <section
       id="home"
       className="scroll-mt-24 flex min-h-screen flex-col items-center justify-center px-6 text-center bg-[rgb(45,45,45)] text-white"
     >
-      {/* 3D logo ONLY (flat SVG removed) */}
-      <div className="w-full max-w-4xl">
+      {/* 3D only (no flat SVG) */}
+      <div className="w-full max-w-5xl"> {/* wider container */}
         <Canvas
           dpr={[1, 2]}
           className="rounded-xl"
-          style={{ height: "520px" }}   // increase for larger appearance
-          camera={{ position: [0, 0, 6], fov: 35 }}
+          style={{ height: "680px" }}        {/* 🔥 much taller = bigger model */}
+          camera={{ position: [0, 0, 4.2], fov: 30 }}  {/* closer + narrower FOV */}
         >
           <color attach="background" args={["rgb(45,45,45)"]} />
-          <hemisphereLight intensity={0.6} groundColor={"#222"} />
-          <directionalLight position={[5, 5, 5]} intensity={1.1} />
-          <directionalLight position={[-5, -2, -4]} intensity={0.4} />
+          <hemisphereLight intensity={0.7} groundColor={"#222"} />
+          <directionalLight position={[6, 8, 6]} intensity={1.2} />
+          <directionalLight position={[-6, -4, -6]} intensity={0.5} />
           <Suspense
             fallback={
               <Html center>
@@ -54,12 +58,13 @@ export default function HeroScene() {
               </Html>
             }
           >
-            <ArmoredModel rotate={!reduce} />
+            <ArmoredModel />
             <Environment preset="city" />
           </Suspense>
         </Canvas>
       </div>
 
+      {/* Tagline */}
       <motion.p
         className="mt-6 text-xl text-gray-300"
         initial="hidden"
@@ -70,6 +75,7 @@ export default function HeroScene() {
         Innovations &bull; Productions &bull; Beyond
       </motion.p>
 
+      {/* CTA */}
       <motion.a
         href="#about"
         className="mt-8 inline-block rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-gray-300"
