@@ -1,248 +1,260 @@
 "use client";
 
+import { motion, type Variants } from "framer-motion";
 import dynamic from "next/dynamic";
-import Image from "next/image";
-import { motion } from "framer-motion";
 
-// Load the 3D hero on the client only
+// Load the 3D scene only on the client (avoids SSR canvas errors)
 const HeroScene = dynamic(() => import("../components/HeroScene"), { ssr: false });
 
-const fadeUp = {
+// Reusable fade-up animation (typed as Variants)
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 16 },
-  show: (i = 0) => ({
+  show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay: 0.08 * i, ease: "easeOut" },
-  }),
+    // Use cubic-bezier array to satisfy strict typing instead of a string like "easeOut"
+    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
+  },
 };
-
-// Simple inline “check” icon (no dependency)
-function Check() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      className="inline-block -mt-[2px] mr-2"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M20 6L9 17l-5-5" />
-    </svg>
-  );
-}
 
 export default function Home() {
   return (
-    <main className="bg-[rgb(45,45,45)] text-neutral-200">
-      {/* ===== HERO ===== */}
+    <main className="bg-[rgb(45,45,45)] text-zinc-100">
+      {/* HERO */}
       <section
         id="home"
-        className="scroll-mt-24 relative mx-auto w-full max-w-6xl px-6 pt-10 sm:pt-16"
+        className="relative flex min-h-[72vh] items-center justify-center overflow-hidden"
       >
-        {/* Rounded stage for the 3D model */}
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-neutral-900/40">
-          {/* Soft vignette */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]" />
+        {/* 3D background */}
+        <div className="absolute inset-0 -z-10">
           <HeroScene />
         </div>
 
-        {/* Tagline under hero */}
-        <motion.p
-          className="mx-auto mt-6 max-w-2xl text-center text-neutral-300"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={fadeUp}
-        >
-          Innovations • Productions • Beyond
-        </motion.p>
+        {/* Center content */}
+        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
+          <motion.p
+            className="text-lg sm:text-xl text-zinc-300"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+            variants={fadeUp}
+            transition={{ delay: 0.1 }}
+          >
+            Innovations • Productions • Beyond
+          </motion.p>
 
-        <motion.div
-          className="mt-7 flex items-center justify-center"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={fadeUp}
-          custom={1}
-        >
-          <a
+          <motion.a
             href="#about"
-            className="rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-white/90"
+            className="mt-8 inline-block rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-zinc-200"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+            variants={fadeUp}
+            transition={{ delay: 0.2 }}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.98 }}
           >
             Learn More
-          </a>
+          </motion.a>
+        </div>
+
+        {/* soft vignette */}
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]" />
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" className="mx-auto max-w-5xl px-6 py-24">
+        <motion.h2
+          className="text-3xl font-bold tracking-tight"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeUp}
+        >
+          About Us
+        </motion.h2>
+
+        <motion.div
+          className="mt-6 space-y-4 leading-relaxed text-zinc-300"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeUp}
+          transition={{ delay: 0.1 }}
+        >
+          <p>
+            <strong>Armored Pangolin</strong> is more than a company name – it’s a creative
+            force, a brand family, and a vision for the future. Founded in 2025, Armored
+            Pangolin was built on over a decade of specialized skills in design, creativity,
+            and technical innovation.
+          </p>
+          <p>
+            We bring together multiple sub-companies under one strong identity:
+          </p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>
+              <strong>Armored Productions</strong> – Photography, videography, and
+              storytelling through powerful visuals.
+            </li>
+            <li>
+              <strong>Armored Innovations</strong> – Technical design, product development,
+              and cutting-edge creative solutions.
+            </li>
+            <li>
+              <strong>Armored Graphics &amp; Animation</strong> – Graphic design, logo
+              animation, motion graphics, and visual effects.
+            </li>
+          </ul>
+          <p>
+            At the core of our work lies a passion for <em>visual communication</em> and{" "}
+            <em>technical precision</em>. From capturing timeless photography to producing
+            dynamic videos, from bold identities to technical manufacturing drawings – we
+            combine creativity with engineering to turn ideas into reality.
+          </p>
+          <p>We are driven by three principles:</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>
+              <strong>Creativity with Impact</strong> – Work that inspires, captivates, and
+              communicates.
+            </li>
+            <li>
+              <strong>Innovation with Purpose</strong> – Solutions that combine artistry and
+              technology.
+            </li>
+            <li>
+              <strong>Strength in Detail</strong> – A commitment to precision.
+            </li>
+          </ul>
+          <p className="font-semibold">
+            Armored Pangolin – Where Creativity Meets Strength.
+          </p>
         </motion.div>
       </section>
 
-      {/* ===== ABOUT ===== */}
-      <section
-        id="about"
-        className="scroll-mt-24 mx-auto mt-20 max-w-6xl px-6 py-10"
-      >
-        {/* Title strip with subtle accent line */}
-        <div className="mb-6 flex items-center gap-3">
-          <h2 className="text-3xl font-bold text-white">About Us</h2>
-          <div className="h-[1px] flex-1 bg-white/10" />
-        </div>
-
-        {/* Lead + Highlights */}
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Lead text */}
-          <motion.div
-            className="lg:col-span-2"
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeUp}
-          >
-            <p className="leading-relaxed text-neutral-300">
-              <span className="font-semibold text-white">Armored Pangolin</span> is more than a company name –
-              it’s a creative force, a brand family, and a vision for the future.
-              Founded in 2025, we blend visual communication with technical precision:
-              photography and cinematics, bold identities and motion, through to
-              detailed technical drawings and product visualization.
-            </p>
-
-            <p className="mt-4 leading-relaxed text-neutral-300">
-              We bring together multiple sub-companies under one identity:
-              <span className="ml-2 font-semibold text-white">Armored Productions</span> (photo/video/story),
-              <span className="ml-2 font-semibold text-white">Armored Innovations</span> (technical design & product),
-              and <span className="ml-2 font-semibold text-white">Armored Graphics & Animation</span> (brand, motion, visuals).
-            </p>
-
-            <p className="mt-4 leading-relaxed text-neutral-300">
-              Like the pangolin—armored, unique, and resilient—we protect and elevate
-              the value of our clients’ visions through <span className="font-semibold text-white">Creativity with Impact</span>,
-              <span className="font-semibold text-white"> Innovation with Purpose</span>, and
-              <span className="font-semibold text-white"> Strength in Detail</span>.
-            </p>
-
-            <p className="mt-4 font-semibold text-white">
-              Armored Pangolin — Where Creativity Meets Strength.
-            </p>
-          </motion.div>
-
-          {/* Highlight cards */}
-          <div className="grid gap-4">
-            {[
-              {
-                title: "Creativity with Impact",
-                desc: "Work that inspires, captivates, and communicates.",
-              },
-              {
-                title: "Innovation with Purpose",
-                desc: "Solutions that combine artistry and technology.",
-              },
-              {
-                title: "Strength in Detail",
-                desc: "Precision across design, animation, and drafting.",
-              },
-            ].map((it, i) => (
-              <motion.div
-                key={it.title}
-                className="rounded-xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:bg-white/10"
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.3 }}
-                variants={fadeUp}
-                custom={i}
-              >
-                <div className="text-sm text-white/70">Principle</div>
-                <div className="mt-1 text-lg font-semibold text-white">{it.title}</div>
-                <div className="mt-1 text-neutral-300">{it.desc}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== SERVICES ===== */}
-      <section
-        id="services"
-        className="scroll-mt-24 mx-auto mt-8 max-w-6xl px-6 pb-24"
-      >
-        <div className="mb-6 flex items-center gap-3">
-          <h2 className="text-3xl font-bold text-white">Our Services</h2>
-          <div className="h-[1px] flex-1 bg-white/10" />
-        </div>
-
-        <motion.p
-          className="max-w-3xl text-neutral-300"
+      {/* SERVICES */}
+      <section id="services" className="mx-auto max-w-5xl px-6 pb-28">
+        <motion.h2
+          className="text-3xl font-bold tracking-tight"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
           variants={fadeUp}
         >
-          At <span className="font-semibold text-white">Armored Pangolin</span>, we bring creativity, technology, and precision together.
-          Our services span across multiple creative and technical fields — ensuring that no matter your vision, we have
-          the tools and expertise to bring it to life.
+          Our Services
+        </motion.h2>
+
+        <motion.p
+          className="mt-3 text-zinc-300"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeUp}
+          transition={{ delay: 0.1 }}
+        >
+          At <strong>Armored Pangolin</strong>, we bring creativity, technology, and
+          precision together. Our services span across multiple creative and technical
+          fields, ensuring that no matter your vision, we have the tools and expertise to
+          bring it to life.
         </motion.p>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {[
-            {
-              title: "Photography & Videography",
-              bullets: [
-                "Professional photography for events, products, portraits, and branding.",
-                "Cinematic videography—from promo videos to full-scale productions.",
-                "Drone work for unique angles and perspectives.",
-                "Editing, color grading, and post-production polish.",
-              ],
-            },
-            {
-              title: "Graphic Design & Branding",
-              bullets: [
-                "Logo design and full brand identity packages.",
-                "Marketing materials: brochures, posters, and digital content.",
-                "Social visuals tailored for impact.",
-                "Custom illustration and concept art.",
-              ],
-            },
-            {
-              title: "Animation & Visual Effects",
-              bullets: [
-                "Logo animations and cinematic brand intros.",
-                "Motion graphics for products and digital platforms.",
-                "Special effects and compositing.",
-                "Story-driven animated content.",
-              ],
-            },
-            {
-              title: "Technical Drawings & Manufacturing Support",
-              bullets: [
-                "Detailed CAD and manufacturing drawings.",
-                "3D modeling and product visualization.",
-                "Prototyping support and documentation.",
-                "Collaboration with manufacturers to ship real products.",
-              ],
-            },
-          ].map((svc, i) => (
-            <motion.div
-              key={svc.title}
-              className="group rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur ring-0 transition hover:translate-y-[-2px] hover:bg-white/10 hover:ring-1 hover:ring-white/15"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-              variants={fadeUp}
-              custom={i}
-            >
-              <div className="mb-3 flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-white/10" />
-                <h3 className="text-xl font-semibold text-white">{svc.title}</h3>
-              </div>
-              <ul className="space-y-2 text-neutral-300">
-                {svc.bullets.map((b) => (
-                  <li key={b} className="leading-relaxed">
-                    <Check />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
+        <div className="mt-8 grid gap-5">
+          {/* Card 1 */}
+          <motion.div
+            className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={fadeUp}
+          >
+            <h3 className="text-xl font-semibold">Photography &amp; Videography</h3>
+            <ul className="mt-3 list-disc pl-6 text-zinc-300 space-y-1">
+              <li>Professional photography for events, products, portraits, and branding.</li>
+              <li>Cinematic videography from promos to full-scale productions.</li>
+              <li>Drone photography &amp; video for unique perspectives.</li>
+              <li>Editing, color grading, and post-production polish.</li>
+            </ul>
+          </motion.div>
+
+          {/* Card 2 */}
+          <motion.div
+            className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={fadeUp}
+            transition={{ delay: 0.05 }}
+          >
+            <h3 className="text-xl font-semibold">Graphic Design &amp; Branding</h3>
+            <ul className="mt-3 list-disc pl-6 text-zinc-300 space-y-1">
+              <li>Logo design and full brand identity packages.</li>
+              <li>Marketing materials: brochures, posters, and digital content.</li>
+              <li>Social media visuals tailored for impact.</li>
+              <li>Custom illustration and concept art.</li>
+            </ul>
+          </motion.div>
+
+          {/* Card 3 */}
+          <motion.div
+            className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={fadeUp}
+            transition={{ delay: 0.1 }}
+          >
+            <h3 className="text-xl font-semibold">Animation &amp; Visual Effects</h3>
+            <ul className="mt-3 list-disc pl-6 text-zinc-300 space-y-1">
+              <li>Logo animations and brand intros.</li>
+              <li>Motion graphics for video and digital platforms.</li>
+              <li>Special effects and compositing.</li>
+              <li>Story-driven animated content.</li>
+            </ul>
+          </motion.div>
+
+          {/* Card 4 */}
+          <motion.div
+            className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={fadeUp}
+            transition={{ delay: 0.15 }}
+          >
+            <h3 className="text-xl font-semibold">
+              Technical Drawings &amp; Manufacturing Support
+            </h3>
+            <ul className="mt-3 list-disc pl-6 text-zinc-300 space-y-1">
+              <li>Detailed CAD and technical drawings for manufacturing.</li>
+              <li>3D modeling and product visualization.</li>
+              <li>Prototyping support through accurate design documentation.</li>
+              <li>
+                Collaboration with manufacturers to bring designs to reality.
+              </li>
+            </ul>
+          </motion.div>
         </div>
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact" className="mx-auto max-w-4xl px-6 pb-28">
+        <motion.div
+          className="rounded-2xl bg-white p-8 text-center text-black"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeUp}
+        >
+          <h2 className="text-2xl font-bold">Let’s build something armored.</h2>
+          <p className="mt-2 text-black/70">
+            Tell me about your project and timeline—I'll get back to you quickly.
+          </p>
+          <a
+            href="mailto:hello@armoredpangolin.com"
+            className="mt-6 inline-block rounded-full bg-black px-6 py-3 font-semibold text-white hover:bg-black/80"
+          >
+            Contact Us
+          </a>
+        </motion.div>
       </section>
     </main>
   );
