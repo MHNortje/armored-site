@@ -12,7 +12,6 @@ const fadeUp: Variants = {
   show: {
     opacity: 1,
     y: 0,
-    // Use cubic-bezier array to satisfy strict typing instead of a string like "easeOut"
     transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
   },
 };
@@ -83,7 +82,7 @@ export default function Home() {
           transition={{ delay: 0.1 }}
         >
           <p>
-            <strong>Armored Pangolin</strong> is more than a company name – it’s a creative
+            <strong>Armored Pangolin</strong> is more than a company name – it&rsquo;s a creative
             force, a brand family, and a vision for the future. Founded in 2025, Armored
             Pangolin was built on over a decade of specialized skills in design, creativity,
             and technical innovation.
@@ -227,9 +226,7 @@ export default function Home() {
               <li>Detailed CAD and technical drawings for manufacturing.</li>
               <li>3D modeling and product visualization.</li>
               <li>Prototyping support through accurate design documentation.</li>
-              <li>
-                Collaboration with manufacturers to bring designs to reality.
-              </li>
+              <li>Collaboration with manufacturers to bring designs to reality.</li>
             </ul>
           </motion.div>
         </div>
@@ -244,9 +241,9 @@ export default function Home() {
           viewport={{ once: true, amount: 0.3 }}
           variants={fadeUp}
         >
-          <h2 className="text-2xl font-bold">Let’s build something armored.</h2>
+          <h2 className="text-2xl font-bold">Let&rsquo;s build something armored.</h2>
           <p className="mt-2 text-black/70">
-            Tell me about your project and timeline—I'll get back to you quickly.
+            Tell me about your project and timeline&mdash;I&rsquo;ll get back to you quickly.
           </p>
           <a
             href="mailto:hello@armoredpangolin.com"
