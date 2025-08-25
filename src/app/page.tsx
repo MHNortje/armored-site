@@ -3,10 +3,10 @@
 import { motion, type Variants } from "framer-motion";
 import dynamic from "next/dynamic";
 
-// Load the 3D scene only on the client (avoids SSR canvas errors)
+// 3D hero only on client (prevents SSR canvas errors)
 const HeroScene = dynamic(() => import("../components/HeroScene"), { ssr: false });
 
-// Reusable fade-up animation (typed as Variants)
+// Reusable fade-up animation
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 16 },
   show: {
@@ -19,15 +19,18 @@ const fadeUp: Variants = {
 export default function Home() {
   return (
     <main className="bg-[rgb(45,45,45)] text-zinc-100">
-      {/* HERO */}
+      {/* ===== HERO (3D studio + logo, scroll-tilt in HeroScene) ===== */}
       <section
         id="home"
         className="relative flex min-h-[72vh] items-center justify-center overflow-hidden"
       >
-        {/* 3D background */}
+        {/* 3D scene as background layer */}
         <div className="absolute inset-0 -z-10">
           <HeroScene />
         </div>
+
+        {/* Soft vignette to help text legibility */}
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]" />
 
         {/* Center content */}
         <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
@@ -56,12 +59,9 @@ export default function Home() {
             Learn More
           </motion.a>
         </div>
-
-        {/* soft vignette */}
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06),transparent_60%)]" />
       </section>
 
-      {/* ABOUT */}
+      {/* ===== ABOUT ===== */}
       <section id="about" className="mx-auto max-w-5xl px-6 py-24">
         <motion.h2
           className="text-3xl font-bold tracking-tight"
@@ -82,14 +82,13 @@ export default function Home() {
           transition={{ delay: 0.1 }}
         >
           <p>
-            <strong>Armored Pangolin</strong> is more than a company name – it&rsquo;s a creative
-            force, a brand family, and a vision for the future. Founded in 2025, Armored
-            Pangolin was built on over a decade of specialized skills in design, creativity,
-            and technical innovation.
+            <strong>Armored Pangolin</strong> is more than a company name – it&rsquo;s a
+            creative force, a brand family, and a vision for the future. Founded in 2025,
+            Armored Pangolin was built on over a decade of specialized skills in design,
+            creativity, and technical innovation.
           </p>
-          <p>
-            We bring together multiple sub-companies under one strong identity:
-          </p>
+
+          <p>We bring together multiple sub-companies under one strong identity:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>
               <strong>Armored Productions</strong> – Photography, videography, and
@@ -104,12 +103,14 @@ export default function Home() {
               animation, motion graphics, and visual effects.
             </li>
           </ul>
+
           <p>
             At the core of our work lies a passion for <em>visual communication</em> and{" "}
             <em>technical precision</em>. From capturing timeless photography to producing
             dynamic videos, from bold identities to technical manufacturing drawings – we
             combine creativity with engineering to turn ideas into reality.
           </p>
+
           <p>We are driven by three principles:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>
@@ -124,13 +125,14 @@ export default function Home() {
               <strong>Strength in Detail</strong> – A commitment to precision.
             </li>
           </ul>
+
           <p className="font-semibold">
             Armored Pangolin – Where Creativity Meets Strength.
           </p>
         </motion.div>
       </section>
 
-      {/* SERVICES */}
+      {/* ===== SERVICES ===== */}
       <section id="services" className="mx-auto max-w-5xl px-6 pb-28">
         <motion.h2
           className="text-3xl font-bold tracking-tight"
@@ -167,7 +169,9 @@ export default function Home() {
           >
             <h3 className="text-xl font-semibold">Photography &amp; Videography</h3>
             <ul className="mt-3 list-disc pl-6 text-zinc-300 space-y-1">
-              <li>Professional photography for events, products, portraits, and branding.</li>
+              <li>
+                Professional photography for events, products, portraits, and branding.
+              </li>
               <li>Cinematic videography from promos to full-scale productions.</li>
               <li>Drone photography &amp; video for unique perspectives.</li>
               <li>Editing, color grading, and post-production polish.</li>
@@ -232,7 +236,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CONTACT */}
+      {/* ===== CONTACT ===== */}
       <section id="contact" className="mx-auto max-w-4xl px-6 pb-28">
         <motion.div
           className="rounded-2xl bg-white p-8 text-center text-black"
@@ -243,7 +247,8 @@ export default function Home() {
         >
           <h2 className="text-2xl font-bold">Let&rsquo;s build something armored.</h2>
           <p className="mt-2 text-black/70">
-            Tell me about your project and timeline&mdash;I&rsquo;ll get back to you quickly.
+            Tell me about your project and timeline&mdash;I&rsquo;ll get back to you
+            quickly.
           </p>
           <a
             href="mailto:hello@armoredpangolin.com"
