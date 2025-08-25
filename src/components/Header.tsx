@@ -36,16 +36,15 @@ export default function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[rgb(45,45,45)]/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        {/* Logo ONLY */}
+        {/* Logo only */}
         <a href="#home" className="flex items-center" aria-label="Armored Pangolin Home">
           <Image
-            src="/Main_Logo-01.svg"      // <== your icon in /public
+            src="/logo.svg"   // <-- your only logo in /public
             alt="Armored Pangolin"
-            width={32}
-            height={32}
+            width={40}
+            height={40}
             priority
           />
-          {/* No text next to the logo */}
         </a>
 
         {/* Desktop nav */}
@@ -57,7 +56,7 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Mobile menu button */}
+        {/* Mobile menu toggle */}
         <button
           className="md:hidden rounded-md border border-white/20 px-3 py-1 text-sm text-gray-200"
           onClick={() => setOpen((v) => !v)}
