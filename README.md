@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Armored Pangolin Portfolio
 
-## Getting Started
+High-end editorial Next.js portfolio for Armored Pangolin, Swakopmund. The project includes restrained workshop animation, a detailed project-enquiry route, a Supabase-backed portfolio gallery, and a protected phone/desktop upload portal.
 
-First, run the development server:
+## Start locally
 
 ```bash
+copy .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The admin portal is at `/admin`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project enquiries
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The static project form opens a fully prepared email draft addressed to `armoredpangolin.info@gmail.com`. Visitors attach any drawings in their email app before sending.
 
-## Learn More
+## Portfolio uploads
 
-To learn more about Next.js, take a look at the following resources:
+Follow [SUPABASE_SETUP.md](./SUPABASE_SETUP.md), then add the two public project values to `.env.local` and Cloudflare Pages. Supabase Auth and Storage policies protect uploads; the public gallery refreshes automatically.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Varien Regular
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The display typography is configured for Varien Regular. Add the licensed webfont as `public/fonts/Varien-Regular.woff2`. Until that file is supplied, the page uses the existing sans-serif fallback. A webfont licence is required before deploying the font file publicly.
 
-## Deploy on Vercel
+## Production build
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The Cloudflare-ready site is generated in `/out`. See [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md) for the complete Cloudflare Pages and domain launch procedure.
