@@ -39,6 +39,25 @@ function publicObjectUrl(name: string) {
   return `${supabaseUrl}/storage/v1/object/public/${bucket}/${encodeURIComponent(name)}`;
 }
 
+function portfolioDisplayName(storageName: string) {
+  const withoutExtension = storageName.replace(/\.[^.]+$/, "");
+  const withoutGeneratedPrefix = withoutExtension.replace(
+    /^\d{13}-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i,
+    "",
+  );
+  const words = withoutGeneratedPrefix.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+  if (!words) return "Armored Pangolin Project";
+
+  const letters = (words.match(/[a-z]/gi) ?? []).length;
+  const digits = (words.match(/\d/g) ?? []).length;
+  if (words.length > 64 || digits > letters * 1.5) return "Armored Pangolin Project";
+
+  return words
+    .replace(/\b[a-z]/g, (character) => character.toUpperCase())
+    .replace(/\bDji\b/g, "DJI")
+    .replace(/\bCnc\b/g, "CNC");
+}
+
 export async function listPortfolioImages(): Promise<{ files: GalleryImage[]; configured: boolean }> {
   if (!isSupabaseConfigured) return { files: [], configured: false };
 
@@ -63,7 +82,7 @@ export async function listPortfolioImages(): Promise<{ files: GalleryImage[]; co
       const uploadedAt = Date.parse(object.created_at || object.updated_at || "") || 0;
       return {
         id: object.id || object.name,
-        name: object.name,
+        name: portfolioDisplayName(object.name),
         url: `${publicObjectUrl(object.name)}?v=${uploadedAt}`,
         uploadedAt,
       };
