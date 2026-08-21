@@ -60,6 +60,7 @@ export function AdminPortal() {
 
   async function upload(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
     if (!session) return;
     setPending(true);
     setError("");
@@ -68,7 +69,7 @@ export function AdminPortal() {
       await uploadPortfolioImages(files, session.access_token);
       setFiles([]);
       setMessage("Upload complete. The public gallery will refresh automatically.");
-      const input = event.currentTarget.elements.namedItem("portfolioFiles") as HTMLInputElement | null;
+      const input = form.elements.namedItem("portfolioFiles") as HTMLInputElement | null;
       if (input) input.value = "";
     } catch (uploadError) {
       setError(uploadError instanceof Error ? uploadError.message : "The upload failed.");
