@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, MapPin, Maximize2, Menu, Volume2, VolumeX, X } from "lucide-react";
@@ -69,6 +70,8 @@ function BrandLockup() {
 
 function AmbientAudio() {
   const audio = useRef<HTMLAudioElement>(null);
+  const interfaceAudio = useRef<AudioContext | null>(null);
+  const lastInterfaceSound = useRef(0);
   const userMuted = useRef(false);
   const [playing, setPlaying] = useState(false);
 
@@ -122,6 +125,60 @@ function AmbientAudio() {
     };
   }, []);
 
+  useEffect(() => {
+    const interactiveSelector = [
+      ".editorial-service",
+      ".editorial-button",
+      ".editorial-utility",
+      ".editorial-showcase-controls button",
+      ".profile-quote-button",
+      ".profile-service-link",
+      ".service-page a",
+      "[data-ui-sound]",
+    ].join(",");
+
+    const playInterfaceSound = (event: PointerEvent) => {
+      if (!playing || userMuted.current || event.pointerType === "touch") return;
+      const target = event.target instanceof Element ? event.target.closest(interactiveSelector) : null;
+      if (!target) return;
+      const previous = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+      if (previous && target.contains(previous)) return;
+
+      const now = performance.now();
+      if (now - lastInterfaceSound.current < 75) return;
+      lastInterfaceSound.current = now;
+
+      const AudioContextClass = window.AudioContext;
+      const context = interfaceAudio.current ?? new AudioContextClass();
+      interfaceAudio.current = context;
+      if (context.state !== "running") {
+        void context.resume();
+        return;
+      }
+
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const start = context.currentTime;
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(330, start);
+      oscillator.frequency.exponentialRampToValueAtTime(235, start + 0.055);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.012, start + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.07);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(start);
+      oscillator.stop(start + 0.075);
+    };
+
+    document.addEventListener("pointerover", playInterfaceSound);
+    return () => document.removeEventListener("pointerover", playInterfaceSound);
+  }, [playing]);
+
+  useEffect(() => () => {
+    void interfaceAudio.current?.close();
+  }, []);
+
   const toggle = async () => {
     if (!audio.current) return;
     audio.current.volume = 0.2;
@@ -142,7 +199,7 @@ function AmbientAudio() {
 
   return (
     <>
-      <audio ref={audio} src="/audio/gentle-spa-workshop.wav" loop preload="auto" autoPlay playsInline />
+      <audio ref={audio} src="/audio/abstract-workshop-ambient-v1.wav" loop preload="auto" autoPlay playsInline />
       <button
         type="button"
         onClick={toggle}
@@ -744,14 +801,15 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
           </div>
           <div className="editorial-services">
             {SERVICES.map((service, index) => (
-              <article key={service.name} className="editorial-service">
+              <Link key={service.name} href={`/${service.slug}/`} className="editorial-service" aria-label={`Read about ${service.name}`} data-ui-sound>
                 <span>0{index + 1}</span>
                 <h3>{service.name}</h3>
                 <p>{service.summary}</p>
                 <ul>
                   {service.items.map((item) => <li key={item}>{item}</li>)}
                 </ul>
-              </article>
+                <span className="editorial-service-link">View service <ArrowUpRight aria-hidden="true" /></span>
+              </Link>
             ))}
           </div>
         </div>
@@ -912,7 +970,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
             <button type="button" onClick={() => setProfileOpen(true)} className="editorial-button editorial-button-outline">
               Read company profile
             </button>
-            <a href="/admin" className="editorial-admin-link">Portfolio admin</a>
+            <Link href="/admin/" className="editorial-admin-link">Portfolio admin</Link>
           </div>
         </div>
         <div className="editorial-shell editorial-footer-base">

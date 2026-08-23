@@ -1,16 +1,19 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, LockKeyhole, LogOut, UploadCloud } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ImageIcon, LoaderCircle, LockKeyhole, LogOut, Trash2, UploadCloud } from "lucide-react";
 import {
+  deletePortfolioImage,
   isSupabaseConfigured,
+  listPortfolioImages,
   signInToPortfolio,
   signOutOfPortfolio,
   type SupabaseSession,
   uploadPortfolioImages,
 } from "@/lib/supabase";
+import type { GalleryImage } from "@/lib/gallery";
 
 const sessionKey = "armored-pangolin-portfolio-session";
 
@@ -20,6 +23,9 @@ export function AdminPortal() {
   const [password, setPassword] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [pending, setPending] = useState(false);
+  const [galleryPending, setGalleryPending] = useState(false);
+  const [deleting, setDeleting] = useState("");
+  const [images, setImages] = useState<GalleryImage[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -41,6 +47,28 @@ export function AdminPortal() {
       if (restoreTimer) window.clearTimeout(restoreTimer);
     };
   }, []);
+
+  const refreshImages = useCallback(async () => {
+    setGalleryPending(true);
+    try {
+      const result = await listPortfolioImages();
+      setImages(result.files);
+    } catch (galleryError) {
+      setError(galleryError instanceof Error ? galleryError.message : "Unable to load portfolio images.");
+    } finally {
+      setGalleryPending(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!session) return;
+
+    const refreshTimer = window.setTimeout(() => {
+      void refreshImages();
+    }, 0);
+
+    return () => window.clearTimeout(refreshTimer);
+  }, [session, refreshImages]);
 
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -71,6 +99,7 @@ export function AdminPortal() {
       setMessage("Upload complete. The public gallery will refresh automatically.");
       const input = form.elements.namedItem("portfolioFiles") as HTMLInputElement | null;
       if (input) input.value = "";
+      await refreshImages();
     } catch (uploadError) {
       setError(uploadError instanceof Error ? uploadError.message : "The upload failed.");
     } finally {
@@ -78,10 +107,30 @@ export function AdminPortal() {
     }
   }
 
+  async function removeImage(image: GalleryImage) {
+    if (!session) return;
+    const confirmed = window.confirm("Remove this image from the public portfolio gallery?");
+    if (!confirmed) return;
+
+    setDeleting(image.storageName);
+    setError("");
+    setMessage("");
+    try {
+      await deletePortfolioImage(image.storageName, session.access_token);
+      setImages((current) => current.filter((item) => item.storageName !== image.storageName));
+      setMessage("Image removed from the portfolio gallery.");
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : "The image could not be removed.");
+    } finally {
+      setDeleting("");
+    }
+  }
+
   async function logout() {
     if (session) await signOutOfPortfolio(session.access_token);
     window.sessionStorage.removeItem(sessionKey);
     setSession(null);
+    setImages([]);
     setMessage("");
     setError("");
   }
@@ -91,8 +140,8 @@ export function AdminPortal() {
       <section className="glass-panel mx-auto max-w-2xl rounded-3xl p-6 sm:p-10">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="relative grid h-12 w-12 overflow-hidden rounded-full border border-white/15 bg-[#232323]">
-              <Image src="/brand/mark-large.png" alt="Armored Pangolin" width={180} height={180} className="absolute h-[150px] w-[150px] max-w-none -translate-x-[51px] -translate-y-[48px] object-contain" priority />
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/15 bg-[#18191b] p-1.5">
+              <Image src="/brand/mark-transparent.png" alt="Armored Pangolin" width={716} height={762} className="h-full w-full object-contain" priority />
             </span>
             <div>
               <p className="micro-label text-[#b994ff]">Armored Pangolin</p>
@@ -120,6 +169,43 @@ export function AdminPortal() {
               <input name="portfolioFiles" type="file" accept="image/*,.heic,.heif" multiple required onChange={(event) => setFiles(Array.from(event.target.files ?? []))} className="block w-full rounded-xl border border-dashed border-white/20 bg-[#232323]/60 p-6 text-sm text-white/55 file:mr-4 file:rounded-full file:border-0 file:bg-[#8c50f0] file:px-4 file:py-3 file:text-xs file:font-semibold file:uppercase file:tracking-wider file:text-white" />
               <button type="submit" disabled={pending || files.length === 0} className="micro-label mt-4 w-full rounded-xl bg-[#8c50f0] px-5 py-4 text-white transition hover:bg-[#a77aff] disabled:opacity-35">{pending ? "Uploading…" : `Upload ${files.length || "selected"} image${files.length === 1 ? "" : "s"}`}</button>
             </form>
+            <section className="rounded-2xl border border-white/12 bg-black/20 p-4 sm:p-7" aria-labelledby="uploaded-images-title">
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-[#8c50f0]/15 text-[#b994ff]"><ImageIcon className="h-5 w-5" /></span>
+                  <div>
+                    <h2 id="uploaded-images-title" className="font-semibold text-[#dcdcdc]">Uploaded portfolio</h2>
+                    <p className="mt-1 text-xs text-white/40">{images.length} image{images.length === 1 ? "" : "s"} currently in the public gallery</p>
+                  </div>
+                </div>
+                <button type="button" onClick={() => void refreshImages()} disabled={galleryPending} className="micro-label rounded-full border border-white/15 px-3 py-2 text-white/50 transition hover:border-[#8c50f0] hover:text-white disabled:opacity-35">Refresh</button>
+              </div>
+
+              {galleryPending ? (
+                <p className="flex items-center gap-2 py-8 text-sm text-white/45"><LoaderCircle className="h-4 w-4 animate-spin" /> Loading portfolio images…</p>
+              ) : images.length === 0 ? (
+                <p className="rounded-xl border border-dashed border-white/15 p-6 text-sm leading-6 text-white/42">No uploaded portfolio images yet. Your six concept images remain available as the gallery fallback.</p>
+              ) : (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {images.map((image) => (
+                    <article key={image.id} className="overflow-hidden rounded-xl border border-white/12 bg-[#171719]">
+                      <div className="relative aspect-[4/3] bg-black/35">
+                        <Image src={image.url} alt="Uploaded Armored Pangolin portfolio project" fill sizes="(max-width: 639px) 100vw, 20rem" className="object-cover" />
+                      </div>
+                      <div className="flex items-center justify-between gap-3 p-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-xs text-white/58" title={image.name}>{image.name}</p>
+                          <p className="mt-1 text-[0.65rem] text-white/28">{image.uploadedAt ? new Date(image.uploadedAt).toLocaleDateString("en-NA", { dateStyle: "medium" }) : "Portfolio image"}</p>
+                        </div>
+                        <button type="button" onClick={() => void removeImage(image)} disabled={Boolean(deleting)} className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-red-300/15 text-red-200/55 transition hover:border-red-300/45 hover:bg-red-300/8 hover:text-red-100 disabled:opacity-30" aria-label="Remove image from portfolio">
+                          {deleting === image.storageName ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
             <button type="button" onClick={logout} className="micro-label inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-3 text-white/55 transition hover:border-[#8c50f0] hover:text-white"><LogOut className="h-3 w-3" /> Sign out</button>
           </div>
         )}

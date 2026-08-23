@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowUpRight, X } from "lucide-react";
 import { ADVANTAGES, COMPANY, INDUSTRIES, PROCESS, SERVICES } from "@/lib/company";
@@ -69,7 +70,7 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
           <div className="absolute inset-0 bg-gradient-to-r from-[#171719] via-[#171719]/82 to-[#171719]/35" />
           <div className="relative z-10 mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12 lg:py-36">
             <p className="micro-label text-[#c6a4ff]">Steel. Engineered in Swakopmund.</p>
-            <h2 className="mt-5 max-w-4xl text-5xl font-semibold uppercase leading-[0.86] tracking-[-0.07em] text-[#e3e3e3] sm:text-7xl lg:text-[7.4rem]">
+            <h2 className="profile-display-title mt-5 max-w-4xl uppercase text-[#e3e3e3]">
               From concept<br />to steel.
             </h2>
             <p className="mt-7 max-w-2xl text-base leading-8 text-white/58 sm:text-lg">
@@ -98,6 +99,9 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
                 <ul>
                   {service.items.map((item) => <li key={item}>{item}</li>)}
                 </ul>
+                <Link href={`/${service.slug}/`} className="profile-service-link" onClick={onClose} data-ui-sound>
+                  View service <ArrowUpRight aria-hidden="true" />
+                </Link>
               </article>
             ))}
           </div>

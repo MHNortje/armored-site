@@ -12,31 +12,37 @@ export const COMPANY = {
 export const SERVICES = [
   {
     name: "CNC Plasma Cutting",
+    slug: "cnc-plasma-cutting-swakopmund",
     summary: "Precision profile cutting for brackets, base plates, gussets, flanges, structures, signage and production parts.",
     items: ["CNC-ready profiles", "Custom components", "Prototype and production quantities"],
   },
   {
     name: "CAD Design & Draughting",
+    slug: "cad-engineering-design",
     summary: "3D CAD, shop drawings, flat patterns and manufacturing logic developed around how the product will actually be made.",
     items: ["Autodesk Inventor", "Fabrication drawings", "Design-for-manufacture"],
   },
   {
     name: "Press Brake Bending",
+    slug: "press-brake-bending",
     summary: "Repeatable sheet and plate forming for brackets, trays, covers, channels, enclosures and custom profiles.",
     items: ["Sheet-metal forming", "Folded components", "Manufactured from drawings"],
   },
   {
     name: "Welding & Fabrication",
+    slug: "welding-fabrication",
     summary: "Frames, platforms, supports, equipment modifications, repairs and complete custom steel assemblies.",
     items: ["MIG welding", "Assembly and fit-up", "Industrial and custom work"],
   },
   {
     name: "Machining",
+    slug: "machining",
     summary: "Milling, drilling, hole preparation and component modification where required for fabricated engineering work.",
     items: ["Milling and drilling", "Machined features", "Fabrication-related machining"],
   },
   {
     name: "Custom Steelwork",
+    slug: "steel-fabrication-swakopmund",
     summary: "One-off prototypes, guards, stands, tooling, furniture, vehicle-related components and unusual practical solutions.",
     items: ["No catalogue limitations", "Replacement components", "Ideas developed into products"],
   },

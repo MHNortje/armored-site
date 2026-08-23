@@ -83,6 +83,7 @@ export async function listPortfolioImages(): Promise<{ files: GalleryImage[]; co
       return {
         id: object.id || object.name,
         name: portfolioDisplayName(object.name),
+        storageName: object.name,
         url: `${publicObjectUrl(object.name)}?v=${uploadedAt}`,
         uploadedAt,
       };
@@ -146,5 +147,25 @@ export async function uploadPortfolioImages(files: File[], accessToken: string) 
       const detail = (await response.json().catch(() => ({}))) as { message?: string; error?: string };
       throw new Error(detail.message || detail.error || `Could not upload ${file.name}.`);
     }
+  }
+}
+
+export async function deletePortfolioImage(name: string, accessToken: string) {
+  requireConfiguration();
+  if (!name || name.includes("/") || name.includes("\\")) {
+    throw new Error("That portfolio image name is not valid.");
+  }
+
+  const response = await fetch(
+    `${supabaseUrl}/storage/v1/object/${bucket}/${encodeURIComponent(name)}`,
+    {
+      method: "DELETE",
+      headers: apiHeaders(accessToken),
+    },
+  );
+
+  if (!response.ok) {
+    const detail = (await response.json().catch(() => ({}))) as { message?: string; error?: string };
+    throw new Error(detail.message || detail.error || "Could not remove that image.");
   }
 }
