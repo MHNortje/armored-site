@@ -99,6 +99,9 @@ export function PersistentAudioProvider({ children }: { children: React.ReactNod
 
   useEffect(() => {
     const interactiveSelector = [
+      "a[href]",
+      "button:not(:disabled)",
+      "[role='button']",
       ".editorial-service",
       ".editorial-button",
       ".editorial-utility",
@@ -111,42 +114,115 @@ export function PersistentAudioProvider({ children }: { children: React.ReactNod
       "[data-ui-sound]",
     ].join(",");
 
-    const playInterfaceSound = (event: PointerEvent) => {
-      if (!playing || userMuted.current || event.pointerType === "touch") return;
-      const target = event.target instanceof Element ? event.target.closest(interactiveSelector) : null;
+    const getAudioContext = () => {
+      const context = interfaceAudio.current ?? new AudioContext();
+      interfaceAudio.current = context;
+      return context;
+    };
+
+    const resolveInteractiveTarget = (event: Event) =>
+      event.target instanceof Element ? event.target.closest(interactiveSelector) : null;
+
+    const playHoverSound = (context: AudioContext) => {
+      const oscillator = context.createOscillator();
+      const overtone = context.createOscillator();
+      const gain = context.createGain();
+      const overtoneGain = context.createGain();
+      const start = context.currentTime;
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(285, start);
+      oscillator.frequency.exponentialRampToValueAtTime(390, start + 0.075);
+      overtone.type = "triangle";
+      overtone.frequency.setValueAtTime(570, start);
+      overtone.frequency.exponentialRampToValueAtTime(740, start + 0.075);
+
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.032, start + 0.009);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.105);
+      overtoneGain.gain.setValueAtTime(0.0001, start);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.006, start + 0.008);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.075);
+
+      oscillator.connect(gain);
+      overtone.connect(overtoneGain);
+      gain.connect(context.destination);
+      overtoneGain.connect(context.destination);
+      oscillator.start(start);
+      overtone.start(start);
+      oscillator.stop(start + 0.11);
+      overtone.stop(start + 0.08);
+    };
+
+    const playClickSound = (context: AudioContext) => {
+      const body = context.createOscillator();
+      const detail = context.createOscillator();
+      const bodyGain = context.createGain();
+      const detailGain = context.createGain();
+      const start = context.currentTime;
+
+      body.type = "triangle";
+      body.frequency.setValueAtTime(175, start);
+      body.frequency.exponentialRampToValueAtTime(92, start + 0.085);
+      detail.type = "square";
+      detail.frequency.setValueAtTime(920, start);
+      detail.frequency.exponentialRampToValueAtTime(520, start + 0.026);
+
+      bodyGain.gain.setValueAtTime(0.0001, start);
+      bodyGain.gain.exponentialRampToValueAtTime(0.047, start + 0.004);
+      bodyGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.1);
+      detailGain.gain.setValueAtTime(0.0001, start);
+      detailGain.gain.exponentialRampToValueAtTime(0.012, start + 0.002);
+      detailGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.032);
+
+      body.connect(bodyGain);
+      detail.connect(detailGain);
+      bodyGain.connect(context.destination);
+      detailGain.connect(context.destination);
+      body.start(start);
+      detail.start(start);
+      body.stop(start + 0.105);
+      detail.stop(start + 0.035);
+    };
+
+    const playInterfaceHover = (event: PointerEvent) => {
+      if (userMuted.current || event.pointerType === "touch") return;
+      const target = resolveInteractiveTarget(event);
       if (!target) return;
       const previous = event.relatedTarget instanceof Node ? event.relatedTarget : null;
       if (previous && target.contains(previous)) return;
 
       const now = performance.now();
-      if (now - lastInterfaceSound.current < 75) return;
+      if (now - lastInterfaceSound.current < 90) return;
       lastInterfaceSound.current = now;
 
-      const context = interfaceAudio.current ?? new AudioContext();
-      interfaceAudio.current = context;
+      const context = getAudioContext();
       if (context.state !== "running") {
         void context.resume();
         return;
       }
 
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      const start = context.currentTime;
-      oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(330, start);
-      oscillator.frequency.exponentialRampToValueAtTime(235, start + 0.055);
-      gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.012, start + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.07);
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-      oscillator.start(start);
-      oscillator.stop(start + 0.075);
+      playHoverSound(context);
     };
 
-    document.addEventListener("pointerover", playInterfaceSound);
-    return () => document.removeEventListener("pointerover", playInterfaceSound);
-  }, [playing]);
+    const playInterfaceClick = (event: MouseEvent) => {
+      if (userMuted.current || !resolveInteractiveTarget(event)) return;
+      const context = getAudioContext();
+      if (context.state === "running") {
+        playClickSound(context);
+        return;
+      }
+
+      void context.resume().then(() => playClickSound(context));
+    };
+
+    document.addEventListener("pointerover", playInterfaceHover);
+    document.addEventListener("click", playInterfaceClick);
+    return () => {
+      document.removeEventListener("pointerover", playInterfaceHover);
+      document.removeEventListener("click", playInterfaceClick);
+    };
+  }, []);
 
   useEffect(() => () => {
     void interfaceAudio.current?.close();
