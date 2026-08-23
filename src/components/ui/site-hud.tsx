@@ -5,8 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, MapPin, Maximize2, Menu, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, MapPin, Maximize2, Menu, X } from "lucide-react";
 import { CompanyProfile } from "@/components/ui/company-profile";
+import { PersistentAudioControl } from "@/components/ui/persistent-audio";
 import { COMPANY, INDUSTRIES, PROCESS, SERVICES } from "@/lib/company";
 import type { GalleryImage } from "@/lib/gallery";
 
@@ -18,37 +19,37 @@ const fallbackWork = [
   {
     eyebrow: "Concept visualisation · Custom braaier",
     title: "A braaier built for the Namib coast.",
-    src: "/brand/concept-namibian-braaier.png",
+    src: "/brand/concept-namibian-braaier-hd.webp",
     position: "center",
   },
   {
     eyebrow: "Concept visualisation · Lodge signage",
     title: "A landmark arrival for the lodge.",
-    src: "/brand/concept-lodge-sign.png",
+    src: "/brand/concept-lodge-sign-hd.webp",
     position: "center",
   },
   {
     eyebrow: "Concept visualisation · Fabricated frame",
     title: "Structural steel, squared and ready.",
-    src: "/brand/concept-steel-frame.png",
+    src: "/brand/concept-steel-frame-hd.webp",
     position: "center",
   },
   {
     eyebrow: "Concept visualisation · Truck trailer",
     title: "A trailer engineered for hard kilometres.",
-    src: "/brand/concept-truck-trailer.png",
+    src: "/brand/concept-truck-trailer-hd.webp",
     position: "center",
   },
   {
     eyebrow: "Concept visualisation · Vehicle canopy",
     title: "A canopy made for remote work.",
-    src: "/brand/concept-vehicle-canopy.png",
+    src: "/brand/concept-vehicle-canopy-hd.webp",
     position: "center",
   },
   {
     eyebrow: "Concept visualisation · Structural warehouse",
     title: "An I-beam warehouse built to endure.",
-    src: "/brand/concept-ibeam-warehouse.png",
+    src: "/brand/concept-ibeam-warehouse-hd.webp",
     position: "center",
   },
 ];
@@ -65,152 +66,6 @@ function BrandLockup() {
         priority
       />
     </a>
-  );
-}
-
-function AmbientAudio() {
-  const audio = useRef<HTMLAudioElement>(null);
-  const interfaceAudio = useRef<AudioContext | null>(null);
-  const lastInterfaceSound = useRef(0);
-  const userMuted = useRef(false);
-  const [playing, setPlaying] = useState(false);
-
-  useEffect(() => {
-    const element = audio.current;
-    if (!element) return;
-
-    element.volume = 0.2;
-    element.autoplay = true;
-    element.muted = false;
-    element.defaultMuted = false;
-
-    const removeBrowserGateListeners = () => {
-      window.removeEventListener("pointerdown", resumeAfterBrowserGate, { capture: true });
-      window.removeEventListener("touchstart", resumeAfterBrowserGate, { capture: true });
-      window.removeEventListener("keydown", resumeAfterBrowserGate, { capture: true });
-      window.removeEventListener("click", resumeAfterBrowserGate, { capture: true });
-    };
-
-    const startSoundtrack = async () => {
-      if (userMuted.current || !element.paused) return;
-      try {
-        await element.play();
-        setPlaying(true);
-        removeBrowserGateListeners();
-      } catch {
-        setPlaying(false);
-      }
-    };
-
-    function resumeAfterBrowserGate() {
-      void startSoundtrack();
-    }
-
-    const resumeWhenReady = () => void startSoundtrack();
-
-    element.addEventListener("canplay", resumeWhenReady, { once: true });
-    element.addEventListener("loadeddata", resumeWhenReady, { once: true });
-    element.load();
-    void startSoundtrack();
-
-    window.addEventListener("pointerdown", resumeAfterBrowserGate, { capture: true });
-    window.addEventListener("touchstart", resumeAfterBrowserGate, { capture: true, passive: true });
-    window.addEventListener("keydown", resumeAfterBrowserGate, { capture: true });
-    window.addEventListener("click", resumeAfterBrowserGate, { capture: true });
-
-    return () => {
-      element.removeEventListener("canplay", resumeWhenReady);
-      element.removeEventListener("loadeddata", resumeWhenReady);
-      removeBrowserGateListeners();
-    };
-  }, []);
-
-  useEffect(() => {
-    const interactiveSelector = [
-      ".editorial-service",
-      ".editorial-button",
-      ".editorial-utility",
-      ".editorial-showcase-controls button",
-      ".profile-quote-button",
-      ".profile-service-link",
-      ".service-page a",
-      "[data-ui-sound]",
-    ].join(",");
-
-    const playInterfaceSound = (event: PointerEvent) => {
-      if (!playing || userMuted.current || event.pointerType === "touch") return;
-      const target = event.target instanceof Element ? event.target.closest(interactiveSelector) : null;
-      if (!target) return;
-      const previous = event.relatedTarget instanceof Node ? event.relatedTarget : null;
-      if (previous && target.contains(previous)) return;
-
-      const now = performance.now();
-      if (now - lastInterfaceSound.current < 75) return;
-      lastInterfaceSound.current = now;
-
-      const AudioContextClass = window.AudioContext;
-      const context = interfaceAudio.current ?? new AudioContextClass();
-      interfaceAudio.current = context;
-      if (context.state !== "running") {
-        void context.resume();
-        return;
-      }
-
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      const start = context.currentTime;
-      oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(330, start);
-      oscillator.frequency.exponentialRampToValueAtTime(235, start + 0.055);
-      gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.012, start + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.07);
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-      oscillator.start(start);
-      oscillator.stop(start + 0.075);
-    };
-
-    document.addEventListener("pointerover", playInterfaceSound);
-    return () => document.removeEventListener("pointerover", playInterfaceSound);
-  }, [playing]);
-
-  useEffect(() => () => {
-    void interfaceAudio.current?.close();
-  }, []);
-
-  const toggle = async () => {
-    if (!audio.current) return;
-    audio.current.volume = 0.2;
-    if (audio.current.paused) {
-      userMuted.current = false;
-      try {
-        await audio.current.play();
-        setPlaying(true);
-      } catch {
-        setPlaying(false);
-      }
-    } else {
-      userMuted.current = true;
-      audio.current.pause();
-      setPlaying(false);
-    }
-  };
-
-  return (
-    <>
-      <audio ref={audio} src="/audio/abstract-workshop-ambient-v1.wav" loop preload="auto" autoPlay playsInline />
-      <button
-        type="button"
-        onClick={toggle}
-        className="editorial-utility"
-        aria-label={playing ? "Mute ambient soundtrack" : "Turn ambient soundtrack on"}
-        aria-pressed={playing}
-      >
-        {playing ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
-        <span>{playing ? "Mute sound" : "Sound off"}</span>
-      </button>
-    </>
   );
 }
 
@@ -636,7 +491,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
       <section ref={heroRef} className="editorial-hero" aria-labelledby="hero-title">
         <div className="editorial-hero-media">
           <Image
-            src="/brand/workshop-hero-namibia-outline-v5.png"
+            src="/brand/workshop-hero-4k-v6.webp"
             alt="Armored Pangolin precision engineering workshop with a CNC plasma cutter, CAD station and the Namib coast"
             fill
             priority
@@ -667,7 +522,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
             <a href="#contact">Contact</a>
           </nav>
           <div className="editorial-header-actions">
-            <AmbientAudio />
+            <PersistentAudioControl />
             <button type="button" onClick={() => setProfileOpen(true)} className="editorial-utility editorial-profile-trigger">
               Company profile
             </button>
@@ -824,7 +679,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
           <div className="editorial-machinery-image editorial-press-image">
             <div className="editorial-machinery-media" data-subtle-parallax>
               <Image
-                src="/brand/press-brake-workshop-v2.png"
+                src="/brand/press-brake-workshop-v2-hd.webp"
                 alt="Industrial press brake and precision bending tooling inside a Swakopmund fabrication workshop"
                 fill
                 sizes="(max-width: 767px) 100vw, 68vw"
@@ -846,7 +701,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
       <section ref={statementRef} className="editorial-statement" aria-labelledby="statement-title">
         <div className="editorial-statement-media" data-subtle-parallax>
           <Image
-            src="/brand/cad-engineering-workstation-v1.png"
+            src="/brand/cad-engineering-workstation-v1-hd.webp"
             alt="High-end CAD engineering workstation displaying a production-ready folded steel assembly"
             fill
             sizes="100vw"
@@ -867,7 +722,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
           <div className="editorial-machinery-image editorial-welding-image">
             <div className="editorial-machinery-media" data-subtle-parallax>
               <Image
-                src="/brand/welding-workshop-v2.png"
+                src="/brand/welding-workshop-v2-hd.webp"
                 alt="Close three-quarter view of a professional welding and fit-up bay inside a Swakopmund workshop"
                 fill
                 sizes="(max-width: 767px) 100vw, 68vw"

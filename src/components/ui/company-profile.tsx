@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowUpRight, X } from "lucide-react";
+import { PersistentAudioControl } from "@/components/ui/persistent-audio";
 import { ADVANTAGES, COMPANY, INDUSTRIES, PROCESS, SERVICES } from "@/lib/company";
 
 type CompanyProfileProps = {
@@ -49,7 +50,8 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
             className="h-auto w-44 sm:w-56"
           />
           <div className="flex items-center gap-3">
-            <button type="button" onClick={onQuote} className="profile-quote-button hidden sm:inline-flex">
+            <PersistentAudioControl className="editorial-utility profile-audio-control" />
+            <button type="button" onClick={onQuote} className="profile-quote-button profile-header-quote">
               Request a quote <ArrowUpRight className="h-4 w-4" />
             </button>
             <button type="button" onClick={onClose} className="profile-close" autoFocus aria-label="Close company profile">
@@ -60,7 +62,7 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
 
         <section className="profile-hero">
           <Image
-            src="/brand/workshop-hero.png"
+            src="/brand/workshop-hero-4k-v6.webp"
             alt="Armored Pangolin CNC fabrication workshop concept"
             fill
             priority
@@ -88,7 +90,12 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
         <section className="profile-section">
           <div className="profile-section-heading">
             <p className="micro-label text-[#b994ff]">01 · Services</p>
-            <h3>One workshop.<br />A complete manufacturing conversation.</h3>
+            <h3 className="profile-services-title">
+              <span>One workshop.</span>
+              <span>A complete</span>
+              <span>manufacturing</span>
+              <span>conversation.</span>
+            </h3>
           </div>
           <div className="profile-service-grid">
             {SERVICES.map((service, index) => (

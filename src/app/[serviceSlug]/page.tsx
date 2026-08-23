@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight, MapPin } from "lucide-react";
+import { PersistentAudioControl } from "@/components/ui/persistent-audio";
 import { COMPANY } from "@/lib/company";
 import { getServicePage, SERVICE_PAGES } from "@/lib/service-pages";
 
@@ -28,6 +29,8 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
     title: service.metaTitle,
     description: service.description,
     alternates: { canonical },
+    category: "Industrial engineering and metal manufacturing",
+    robots: { index: true, follow: true },
     openGraph: {
       title: `${service.metaTitle} | Armored Pangolin`,
       description: service.description,
@@ -50,31 +53,44 @@ export default async function ServicePageRoute({ params }: ServicePageProps) {
   if (!service) notFound();
 
   const related = SERVICE_PAGES.filter((item) => item.slug !== service.slug).slice(0, 3);
+  const pageUrl = `${siteUrl}/${service.slug}/`;
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    name: service.name,
-    description: service.description,
-    url: `${siteUrl}/${service.slug}/`,
-    image: `${siteUrl}${service.image}`,
-    provider: {
-      "@type": "LocalBusiness",
-      name: COMPANY.name,
-      url: siteUrl,
-      telephone: "+264815519040",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Unit 2 Marvin Park, Industrial Area",
-        addressLocality: "Swakopmund",
-        addressCountry: "NA",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `${pageUrl}#service`,
+        name: service.name,
+        description: service.description,
+        url: pageUrl,
+        image: `${siteUrl}${service.image}`,
+        provider: { "@id": `${siteUrl}/#business` },
+        areaServed: ["Swakopmund", "Walvis Bay", "Erongo", "Namibia"],
       },
-    },
-    areaServed: ["Swakopmund", "Walvis Bay", "Erongo", "Namibia"],
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumbs`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+          { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/#capabilities` },
+          { "@type": "ListItem", position: 3, name: service.name, item: pageUrl },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${pageUrl}#frequently-asked-questions`,
+        mainEntity: service.questions.map(({ question, answer }) => ({
+          "@type": "Question",
+          name: question,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      },
+    ],
   };
 
   return (
     <main className="service-page">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
 
       <header className="service-header">
         <Link href="/" className="service-brand" aria-label="Armored Pangolin home">
@@ -85,7 +101,10 @@ export default async function ServicePageRoute({ params }: ServicePageProps) {
           <Link href="/#work">Work</Link>
           <Link href="/#contact">Contact</Link>
         </nav>
-        <Link href="/start-a-project/" className="service-header-cta">Start a project <ArrowUpRight aria-hidden="true" /></Link>
+        <div className="service-header-actions">
+          <PersistentAudioControl className="editorial-utility service-audio-control" />
+          <Link href="/start-a-project/" className="service-header-cta">Start a project <ArrowUpRight aria-hidden="true" /></Link>
+        </div>
       </header>
 
       <section className="service-hero">

@@ -472,6 +472,18 @@ textarea:focus-visible {
   color: #dedede;
 }
 
+.company-profile {
+  overflow-x: hidden;
+}
+
+.profile-header-quote {
+  display: none;
+}
+
+.profile-services-title span {
+  display: block;
+}
+
 .profile-display-title {
   font-family: var(--font-display);
   font-size: clamp(3.25rem, 8vw, 7.4rem);
@@ -637,6 +649,10 @@ textarea:focus-visible {
 }
 
 @media (min-width: 640px) {
+  .profile-header-quote {
+    display: inline-flex;
+  }
+
   .profile-section,
   .profile-concept-section,
   .profile-footer {
@@ -669,7 +685,8 @@ textarea:focus-visible {
 
 @media (min-width: 1360px) {
   .profile-section {
-    grid-template-columns: minmax(27rem, 0.82fr) minmax(0, 1.58fr);
+    grid-template-columns: minmax(30rem, 0.94fr) minmax(0, 1.46fr);
+    gap: clamp(3rem, 4vw, 4.5rem);
   }
 
   .profile-section-heading {
@@ -678,7 +695,10 @@ textarea:focus-visible {
   }
 
   .profile-section-heading h3 {
-    font-size: clamp(2.5rem, 3.45vw, 4.9rem);
+    max-width: 30rem;
+    font-size: clamp(2.75rem, 2.85vw, 3.65rem);
+    line-height: 0.98;
+    text-wrap: wrap;
   }
 }
 
@@ -856,6 +876,12 @@ textarea:focus-visible {
   left: max(1.25rem, calc((100vw - 90rem) / 2));
   max-width: 52rem;
   isolation: isolate;
+}
+
+@media (min-width: 1360px) and (min-height: 850px) {
+  .editorial-hero-copy {
+    top: clamp(36rem, 55vh, 44rem);
+  }
 }
 
 .editorial-hero-copy::before {
@@ -1155,6 +1181,22 @@ textarea:focus-visible {
   display: flex;
   justify-content: center;
   gap: clamp(1rem, 2.5vw, 2.3rem);
+}
+
+.service-header-actions,
+.project-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.service-audio-control,
+.project-audio-control,
+.profile-audio-control,
+.admin-audio-control {
+  flex: none;
+  color: rgba(255, 255, 255, 0.74);
 }
 
 .service-header nav a,
@@ -2996,6 +3038,12 @@ textarea:focus-visible {
   width: 0.9rem;
 }
 
+.project-header-actions .project-back {
+  min-height: 2.75rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  padding-left: 1rem;
+}
+
 .project-hero {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
@@ -3068,6 +3116,56 @@ textarea:focus-visible {
 
 .project-form-shell {
   padding-bottom: clamp(6rem, 10vw, 10rem);
+}
+
+.project-service-links {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  padding-block: clamp(3rem, 5vw, 5rem);
+}
+
+.project-service-links > p {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.58rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a979f2;
+}
+
+.project-service-links > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.project-service-links a {
+  display: flex;
+  min-height: 5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.2rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.92rem, 1.2vw, 1.18rem);
+  color: rgba(225, 226, 223, 0.74);
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.project-service-links a:hover {
+  z-index: 1;
+  background: rgba(140, 80, 240, 0.11);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.project-service-links svg {
+  width: 0.9rem;
+  flex: none;
+  color: #a979f2;
 }
 
 .project-form {
@@ -3505,6 +3603,23 @@ textarea:focus-visible {
     display: none;
   }
 
+  .service-audio-control span,
+  .project-audio-control span,
+  .profile-audio-control span,
+  .admin-audio-control span {
+    display: none;
+  }
+
+  .service-audio-control,
+  .project-audio-control,
+  .profile-audio-control,
+  .admin-audio-control {
+    min-width: 2.45rem;
+    min-height: 2.45rem;
+    justify-content: center;
+    padding: 0.55rem;
+  }
+
   .service-hero,
   .service-hero-copy {
     min-height: max(44rem, 100svh);
@@ -3530,7 +3645,7 @@ textarea:focus-visible {
   }
 
   .service-hero h1 {
-    font-size: clamp(3rem, 14vw, 5rem);
+    font-size: clamp(2.85rem, 13vw, 5rem);
     line-height: 0.9;
   }
 
@@ -3541,6 +3656,10 @@ textarea:focus-visible {
 
   .service-hero-intro a {
     width: fit-content;
+  }
+
+  .project-service-links > div {
+    grid-template-columns: 1fr;
   }
 
   .service-content-heading,
@@ -3947,6 +4066,20 @@ textarea:focus-visible {
   .editorial-brand,
   .project-brand {
     width: 8.6rem;
+  }
+
+  .service-brand {
+    width: 8.4rem;
+  }
+
+  .project-back span {
+    display: none;
+  }
+
+  .project-header-actions .project-back {
+    width: 2.45rem;
+    justify-content: center;
+    padding-left: 0.65rem;
   }
 
   .editorial-header-actions {

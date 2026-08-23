@@ -4,6 +4,7 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ImageIcon, LoaderCircle, LockKeyhole, LogOut, Trash2, UploadCloud } from "lucide-react";
+import { PersistentAudioControl } from "@/components/ui/persistent-audio";
 import {
   deletePortfolioImage,
   isSupabaseConfigured,
@@ -148,9 +149,12 @@ export function AdminPortal() {
               <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[#dcdcdc]">Portfolio upload portal</h1>
             </div>
           </div>
-          <Link href="/" className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/15 text-white/50 transition hover:border-[#8c50f0] hover:text-white" aria-label="Back to website">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <PersistentAudioControl className="editorial-utility admin-audio-control" />
+            <Link href="/" className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/15 text-white/50 transition hover:border-[#8c50f0] hover:text-white" aria-label="Back to website">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
         <p className="mt-5 max-w-xl text-sm leading-6 text-white/50">Upload finished-work, process and detail photography from your phone or desktop. New images flow directly into the showcase gallery.</p>
 
