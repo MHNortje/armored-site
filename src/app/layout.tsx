@@ -42,14 +42,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  icons: {
-    icon: [
-      { url: "/favicon.ico?v=pangolin-2", sizes: "any" },
-      { url: "/icon.png?v=pangolin-2", type: "image/png", sizes: "64x64" },
-    ],
-    shortcut: "/favicon.ico?v=pangolin-2",
-    apple: { url: "/apple-icon.png?v=pangolin-2", sizes: "180x180", type: "image/png" },
-  },
   openGraph: {
     title: "Armored Pangolin | From Concept to Steel",
     description:
@@ -167,6 +159,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "@id": `${siteUrl}/#website`,
         url: siteUrl,
         name: "Armored Pangolin",
+        alternateName: "Armored Pangolin Namibia",
         description:
           "Metal manufacturing, CNC plasma cutting, steel fabrication and engineering design in Swakopmund, Namibia.",
         publisher: { "@id": `${siteUrl}/#business` },
