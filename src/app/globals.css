@@ -1831,14 +1831,15 @@ textarea:focus-visible {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 0.22rem;
-  height: 0.09rem;
+  width: 0.34rem;
+  height: 0.13rem;
   border-radius: 999px;
-  background: #ffe8b3;
-  box-shadow: 0 0 5px rgba(255, 205, 111, 0.96), 0 0 10px rgba(166, 88, 239, 0.68);
+  background: linear-gradient(90deg, #fffdf0, #ffd36e 58%, #b66cff);
+  box-shadow: 0 0 7px rgba(255, 231, 164, 1), 0 0 16px rgba(255, 176, 72, 0.9), 0 0 24px rgba(166, 88, 239, 0.78);
+  filter: brightness(1.22) saturate(1.12);
   opacity: 0;
   transform-origin: center;
-  animation: editorial-gravity-spark 1.55s cubic-bezier(0.18, 0.62, 0.24, 1) infinite;
+  animation: editorial-gravity-spark 1.68s cubic-bezier(0.18, 0.62, 0.24, 1) infinite;
 }
 
 .editorial-gravity-sparks em:nth-child(1) { --launch-x: -1.7rem; --launch-y: -0.9rem; --hit-x: -3.6rem; --hit-y: 1.4rem; --bounce-x: -4.25rem; --bounce-y: 0.35rem; --rest-x: -5.6rem; --rest-y: 2.05rem; animation-delay: -0.18s; }
@@ -1851,6 +1852,10 @@ textarea:focus-visible {
 .editorial-gravity-sparks em:nth-child(8) { --launch-x: 1.75rem; --launch-y: -0.8rem; --hit-x: 3.8rem; --hit-y: 1.45rem; --bounce-x: 4.45rem; --bounce-y: 0.52rem; --rest-x: 5.7rem; --rest-y: 2.45rem; animation-delay: -0.36s; }
 .editorial-gravity-sparks em:nth-child(9) { --launch-x: -0.35rem; --launch-y: -1.3rem; --hit-x: -1.25rem; --hit-y: 1.2rem; --bounce-x: -1.7rem; --bounce-y: 0.48rem; --rest-x: -2.6rem; --rest-y: 2rem; animation-delay: -1.05s; }
 .editorial-gravity-sparks em:nth-child(10) { --launch-x: 2.7rem; --launch-y: -0.2rem; --hit-x: 5rem; --hit-y: 1.55rem; --bounce-x: 5.8rem; --bounce-y: 0.65rem; --rest-x: 7rem; --rest-y: 2.55rem; animation-delay: -0.61s; }
+.editorial-gravity-sparks em:nth-child(11) { --launch-x: -2.9rem; --launch-y: -0.75rem; --hit-x: -5.2rem; --hit-y: 1.25rem; --bounce-x: -6.15rem; --bounce-y: 0.15rem; --rest-x: -7.6rem; --rest-y: 2.35rem; animation-delay: -1.52s; }
+.editorial-gravity-sparks em:nth-child(12) { --launch-x: 0.2rem; --launch-y: -2rem; --hit-x: 1.15rem; --hit-y: 1.75rem; --bounce-x: 1.8rem; --bounce-y: 0.38rem; --rest-x: 3rem; --rest-y: 2.75rem; animation-delay: -0.84s; }
+.editorial-gravity-sparks em:nth-child(13) { --launch-x: 3rem; --launch-y: -0.9rem; --hit-x: 5.5rem; --hit-y: 1.35rem; --bounce-x: 6.35rem; --bounce-y: 0.12rem; --rest-x: 7.9rem; --rest-y: 2.4rem; animation-delay: -0.29s; }
+.editorial-gravity-sparks em:nth-child(14) { --launch-x: -1.45rem; --launch-y: -1.55rem; --hit-x: -3.35rem; --hit-y: 1.9rem; --bounce-x: -4.1rem; --bounce-y: 0.55rem; --rest-x: -5.35rem; --rest-y: 2.95rem; animation-delay: -1.22s; }
 
 .editorial-gravity-sparks-welding em {
   animation-duration: 1.72s;
@@ -1858,10 +1863,11 @@ textarea:focus-visible {
 
 @keyframes editorial-gravity-spark {
   0% { opacity: 0; transform: translate3d(0, 0, 0) rotate(0deg) scale(0.55); }
-  8% { opacity: 1; }
+  6% { opacity: 1; }
   22% { opacity: 1; transform: translate3d(var(--launch-x), var(--launch-y), 0) rotate(90deg) scale(1); }
-  50% { opacity: 0.92; transform: translate3d(var(--hit-x), var(--hit-y), 0) rotate(210deg) scale(0.88); }
-  67% { opacity: 0.78; transform: translate3d(var(--bounce-x), var(--bounce-y), 0) rotate(292deg) scale(0.72); }
+  50% { opacity: 1; transform: translate3d(var(--hit-x), var(--hit-y), 0) rotate(210deg) scale(1.02); }
+  67% { opacity: 0.94; transform: translate3d(var(--bounce-x), var(--bounce-y), 0) rotate(292deg) scale(0.88); }
+  84% { opacity: 0.68; }
   100% { opacity: 0; transform: translate3d(var(--rest-x), var(--rest-y), 0) rotate(410deg) scale(0.42); }
 }
 

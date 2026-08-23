@@ -359,7 +359,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
     const placePlasmaEffect = () => {
       const sourceWidth = 1728;
       const sourceHeight = 910;
-      const sourceX = 1368;
+      const sourceX = 1371;
       const sourceY = 498;
       const screenX = 1353;
       const screenY = 549;
@@ -505,6 +505,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
               <i /><i /><i /><i /><i /><i />
               <span className="editorial-gravity-sparks editorial-gravity-sparks-plasma">
                 <em /><em /><em /><em /><em /><em /><em /><em /><em /><em />
+                <em /><em /><em /><em />
               </span>
             </span>
             <span className="editorial-smoke-loop editorial-smoke-loop-plasma">
@@ -738,6 +739,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
                 <i /><i /><i /><i /><i /><i /><i /><i />
                 <span className="editorial-gravity-sparks editorial-gravity-sparks-welding">
                   <em /><em /><em /><em /><em /><em /><em /><em /><em /><em />
+                  <em /><em /><em /><em />
                 </span>
               </span>
               <span className="editorial-smoke-loop editorial-smoke-loop-welding" aria-hidden="true">
