@@ -24,7 +24,7 @@ export function PersistentAudioProvider({ children }: { children: React.ReactNod
     if (!element) return;
 
     userMuted.current = window.localStorage.getItem(muteStorageKey) === "true";
-    element.volume = 0.2;
+    element.volume = 0.26;
     element.muted = false;
     element.defaultMuted = false;
 
@@ -157,7 +157,7 @@ export function PersistentAudioProvider({ children }: { children: React.ReactNod
     toggle: async () => {
       const element = audio.current;
       if (!element) return;
-      element.volume = 0.2;
+      element.volume = 0.26;
       if (element.paused) {
         userMuted.current = false;
         window.localStorage.setItem(muteStorageKey, "false");

@@ -458,8 +458,8 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
       document.querySelectorAll<HTMLElement>("[data-subtle-parallax]").forEach((element) => {
         const bounds = element.getBoundingClientRect();
         const distance = bounds.top + bounds.height / 2 - window.innerHeight / 2;
-        const limit = mobileHero.matches ? 6 : 14;
-        const shift = Math.max(-limit, Math.min(limit, distance * -0.018));
+        const limit = mobileHero.matches ? 10 : 28;
+        const shift = Math.max(-limit, Math.min(limit, distance * -0.032));
         element.style.setProperty("--parallax-y", `${shift.toFixed(2)}px`);
       });
       scrollFrame = 0;
@@ -503,6 +503,9 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
               <b />
               <i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
               <i /><i /><i /><i /><i /><i />
+              <span className="editorial-gravity-sparks editorial-gravity-sparks-plasma">
+                <em /><em /><em /><em /><em /><em /><em /><em /><em /><em />
+              </span>
             </span>
             <span className="editorial-smoke-loop editorial-smoke-loop-plasma">
               <i /><i /><i /><i /><i /><i /><i />
@@ -733,6 +736,9 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
                 <i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
                 <i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
                 <i /><i /><i /><i /><i /><i /><i /><i />
+                <span className="editorial-gravity-sparks editorial-gravity-sparks-welding">
+                  <em /><em /><em /><em /><em /><em /><em /><em /><em /><em />
+                </span>
               </span>
               <span className="editorial-smoke-loop editorial-smoke-loop-welding" aria-hidden="true">
                 <i /><i /><i /><i /><i /><i /><i />
