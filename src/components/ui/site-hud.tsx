@@ -359,7 +359,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
     const placePlasmaEffect = () => {
       const sourceWidth = 1728;
       const sourceHeight = 910;
-      const sourceX = 1359;
+      const sourceX = 1368;
       const sourceY = 498;
       const screenX = 1353;
       const screenY = 549;

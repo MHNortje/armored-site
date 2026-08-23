@@ -27,6 +27,14 @@ export const metadata: Metadata = {
   applicationName: "Armored Pangolin",
   creator: "Armored Pangolin",
   category: "Industrial engineering and steel fabrication",
+  icons: {
+    icon: [
+      { url: "/favicon.ico?v=pangolin-2", sizes: "any" },
+      { url: "/icon.png?v=pangolin-2", type: "image/png", sizes: "64x64" },
+    ],
+    shortcut: "/favicon.ico?v=pangolin-2",
+    apple: { url: "/apple-icon.png?v=pangolin-2", sizes: "180x180", type: "image/png" },
+  },
   openGraph: {
     title: "Armored Pangolin | From Concept to Steel",
     description:
