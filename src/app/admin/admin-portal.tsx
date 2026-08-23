@@ -14,7 +14,7 @@ import {
   type SupabaseSession,
   uploadPortfolioImages,
 } from "@/lib/supabase";
-import type { GalleryImage } from "@/lib/gallery";
+import { portfolioImageAlt, type GalleryImage } from "@/lib/gallery";
 
 const sessionKey = "armored-pangolin-portfolio-session";
 
@@ -142,7 +142,7 @@ export function AdminPortal() {
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/15 bg-[#18191b] p-1.5">
-              <Image src="/brand/mark-transparent.png" alt="Armored Pangolin" width={716} height={762} className="h-full w-full object-contain" priority />
+              <Image src="/brand/mark-transparent.png" alt="Armored Pangolin pangolin mark" width={716} height={762} loading="eager" className="h-full w-full object-contain" />
             </span>
             <div>
               <p className="micro-label text-[#b994ff]">Armored Pangolin</p>
@@ -152,7 +152,7 @@ export function AdminPortal() {
           <div className="flex shrink-0 items-center gap-2">
             <PersistentAudioControl className="editorial-utility admin-audio-control" />
             <Link href="/" className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/15 text-white/50 transition hover:border-[#8c50f0] hover:text-white" aria-label="Back to website">
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -170,7 +170,7 @@ export function AdminPortal() {
           <div className="mt-8 space-y-6">
             <form onSubmit={upload} className="technical-grid rounded-2xl border border-white/12 bg-black/20 p-4 sm:p-7">
               <div className="mb-5 flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-full bg-[#8c50f0]/15 text-[#b994ff]"><UploadCloud className="h-5 w-5" /></span><div><h2 className="font-semibold text-[#dcdcdc]">Add portfolio images</h2><p className="mt-1 text-xs text-white/40">JPG, PNG, WebP or HEIC · up to 8 MB each · six at a time</p></div></div>
-              <input name="portfolioFiles" type="file" accept="image/*,.heic,.heif" multiple required onChange={(event) => setFiles(Array.from(event.target.files ?? []))} className="block w-full rounded-xl border border-dashed border-white/20 bg-[#232323]/60 p-6 text-sm text-white/55 file:mr-4 file:rounded-full file:border-0 file:bg-[#8c50f0] file:px-4 file:py-3 file:text-xs file:font-semibold file:uppercase file:tracking-wider file:text-white" />
+              <input name="portfolioFiles" type="file" accept="image/*,.heic,.heif" multiple required aria-label="Select portfolio images to upload" onChange={(event) => setFiles(Array.from(event.target.files ?? []))} className="block w-full rounded-xl border border-dashed border-white/20 bg-[#232323]/60 p-6 text-sm text-white/55 file:mr-4 file:rounded-full file:border-0 file:bg-[#8c50f0] file:px-4 file:py-3 file:text-xs file:font-semibold file:uppercase file:tracking-wider file:text-white" />
               <button type="submit" disabled={pending || files.length === 0} className="micro-label mt-4 w-full rounded-xl bg-[#8c50f0] px-5 py-4 text-white transition hover:bg-[#a77aff] disabled:opacity-35">{pending ? "Uploading…" : `Upload ${files.length || "selected"} image${files.length === 1 ? "" : "s"}`}</button>
             </form>
             <section className="rounded-2xl border border-white/12 bg-black/20 p-4 sm:p-7" aria-labelledby="uploaded-images-title">
@@ -194,14 +194,14 @@ export function AdminPortal() {
                   {images.map((image) => (
                     <article key={image.id} className="overflow-hidden rounded-xl border border-white/12 bg-[#171719]">
                       <div className="relative aspect-[4/3] bg-black/35">
-                        <Image src={image.url} alt="Uploaded Armored Pangolin portfolio project" fill sizes="(max-width: 639px) 100vw, 20rem" className="object-cover" />
+                        <Image src={image.url} alt={portfolioImageAlt(image.name)} fill loading="lazy" sizes="(max-width: 639px) 100vw, 20rem" className="object-cover" />
                       </div>
                       <div className="flex items-center justify-between gap-3 p-3">
                         <div className="min-w-0">
                           <p className="truncate text-xs text-white/58" title={image.name}>{image.name}</p>
                           <p className="mt-1 text-[0.65rem] text-white/28">{image.uploadedAt ? new Date(image.uploadedAt).toLocaleDateString("en-NA", { dateStyle: "medium" }) : "Portfolio image"}</p>
                         </div>
-                        <button type="button" onClick={() => void removeImage(image)} disabled={Boolean(deleting)} className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-red-300/15 text-red-200/55 transition hover:border-red-300/45 hover:bg-red-300/8 hover:text-red-100 disabled:opacity-30" aria-label="Remove image from portfolio">
+                        <button type="button" onClick={() => void removeImage(image)} disabled={Boolean(deleting)} className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-red-300/15 text-red-200/55 transition hover:border-red-300/45 hover:bg-red-300/8 hover:text-red-100 disabled:opacity-30" aria-label={`Remove ${image.name} from portfolio`}>
                           {deleting === image.storageName ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                         </button>
                       </div>

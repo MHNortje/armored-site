@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/admin/",
+      disallow: ["/admin/", "/api/"],
     },
     sitemap: "https://www.armoredpangolin.com/sitemap.xml",
     host: "https://www.armoredpangolin.com",

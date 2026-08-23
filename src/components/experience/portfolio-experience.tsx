@@ -9,6 +9,7 @@ export function PortfolioExperience() {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
 
   useEffect(() => {
+    let interval: number | undefined;
     const refreshGallery = async () => {
       try {
         const data = await listPortfolioImages();
@@ -18,14 +19,18 @@ export function PortfolioExperience() {
       }
     };
 
-    void refreshGallery();
-    const interval = window.setInterval(refreshGallery, 30_000);
+    // Keep the hero's critical render path free from portfolio-storage work.
+    const initialRefresh = window.setTimeout(() => {
+      void refreshGallery();
+      interval = window.setInterval(refreshGallery, 30_000);
+    }, 900);
     const onVisible = () => {
       if (document.visibilityState === "visible") void refreshGallery();
     };
     document.addEventListener("visibilitychange", onVisible);
     return () => {
-      window.clearInterval(interval);
+      window.clearTimeout(initialRefresh);
+      if (interval) window.clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);

@@ -34,6 +34,9 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="company-profile pointer-events-auto fixed inset-0 z-40 overflow-y-auto bg-[#171719]/96 backdrop-blur-2xl"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="company-profile-title"
     >
       <motion.div
         initial={{ y: 28, opacity: 0 }}
@@ -44,18 +47,19 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
         <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/8 bg-[#171719]/82 px-5 py-4 backdrop-blur-xl sm:px-8 lg:px-12">
           <Image
             src="/brand/logo-lockup-transparent.png"
-            alt="Armored Pangolin"
+            alt="Armored Pangolin metal manufacturing"
             width={1500}
             height={616}
+            loading="eager"
             className="h-auto w-44 sm:w-56"
           />
           <div className="flex items-center gap-3">
             <PersistentAudioControl className="editorial-utility profile-audio-control" />
             <button type="button" onClick={onQuote} className="profile-quote-button profile-header-quote">
-              Request a quote <ArrowUpRight className="h-4 w-4" />
+              Request a quote <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </button>
             <button type="button" onClick={onClose} className="profile-close" autoFocus aria-label="Close company profile">
-              <X className="h-5 w-5" />
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -63,16 +67,16 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
         <section className="profile-hero">
           <Image
             src="/brand/workshop-hero-4k-v6.webp"
-            alt="Armored Pangolin CNC fabrication workshop concept"
+            alt="Armored Pangolin CNC plasma cutting and fabrication workshop in Swakopmund"
             fill
-            priority
+            loading="eager"
             sizes="100vw"
             className="object-cover object-center opacity-52"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#171719] via-[#171719]/82 to-[#171719]/35" />
           <div className="relative z-10 mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12 lg:py-36">
             <p className="micro-label text-[#c6a4ff]">Steel. Engineered in Swakopmund.</p>
-            <h2 className="profile-display-title mt-5 max-w-4xl uppercase text-[#e3e3e3]">
+            <h2 id="company-profile-title" className="profile-display-title mt-5 max-w-4xl uppercase text-[#e3e3e3]">
               From concept<br />to steel.
             </h2>
             <p className="mt-7 max-w-2xl text-base leading-8 text-white/58 sm:text-lg">
@@ -80,7 +84,7 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <button type="button" onClick={onQuote} className="profile-quote-button">
-                Tell us what you need <ArrowUpRight className="h-4 w-4" />
+                Tell us what you need <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
               </button>
               <span className="micro-label rounded-full border border-white/12 px-4 py-3 text-white/42">{COMPANY.region}</span>
             </div>
@@ -121,7 +125,7 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
             We can help develop it into a practical, manufacturable solution—then prepare the drawings, cut the components and build the finished product.
           </p>
           <button type="button" onClick={onQuote} className="profile-quote-button">
-            Discuss your project <ArrowUpRight className="h-4 w-4" />
+            Discuss your project <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </button>
         </section>
 
@@ -171,7 +175,7 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
             <p className="text-sm text-white/58">Armored Pangolin / {COMPANY.registeredEntity}</p>
             <p className="mt-2 text-xs text-white/32">{COMPANY.location}</p>
             <button type="button" onClick={onQuote} className="profile-quote-button mt-6">
-              Request a quotation <ArrowUpRight className="h-4 w-4" />
+              Request a quotation <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
         </footer>

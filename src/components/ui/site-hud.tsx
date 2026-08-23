@@ -1,15 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, MapPin, Maximize2, Menu, X } from "lucide-react";
-import { CompanyProfile } from "@/components/ui/company-profile";
 import { PersistentAudioControl } from "@/components/ui/persistent-audio";
 import { COMPANY, INDUSTRIES, PROCESS, SERVICES } from "@/lib/company";
-import type { GalleryImage } from "@/lib/gallery";
+import { portfolioImageAlt, type GalleryImage } from "@/lib/gallery";
+
+const CompanyProfile = dynamic(
+  () => import("@/components/ui/company-profile").then((module) => module.CompanyProfile),
+  { ssr: false },
+);
 
 type SiteHudProps = {
   galleryImages: GalleryImage[];
@@ -59,11 +64,11 @@ function BrandLockup() {
     <a href="#top" className="editorial-brand" aria-label="Armored Pangolin home">
       <Image
         src="/brand/logo-lockup-transparent.png"
-        alt="Armored Pangolin"
+        alt="Armored Pangolin metal manufacturing"
         width={1500}
         height={616}
         className="h-auto w-full"
-        priority
+        loading="eager"
       />
     </a>
   );
@@ -75,6 +80,7 @@ type ShowcaseItem = {
   eyebrow: string;
   src: string;
   position: string;
+  alt: string;
 };
 
 const galleryCardVariants = {
@@ -105,6 +111,7 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
         eyebrow: "Armored Pangolin project",
         src: image.url,
         position: "center",
+        alt: portfolioImageAlt(image.name),
       }))
     : fallbackWork.map((item, index) => ({
         id: `capability-${index}`,
@@ -112,6 +119,7 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
         eyebrow: item.eyebrow,
         src: item.src,
         position: item.position,
+        alt: `${item.title} Armored Pangolin steel fabrication concept`,
       }));
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -211,8 +219,9 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
             >
               <Image
                 src={activeItem.src}
-                alt={activeItem.name}
+                alt={activeItem.alt}
                 fill
+                loading="lazy"
                 draggable={false}
                 data-subtle-parallax
                 sizes="(max-width: 767px) 94vw, 72vw"
@@ -292,7 +301,7 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
                       if (intention > 60) moveLightbox(-1);
                     }}
                   >
-                    <Image src={lightboxItem.src} alt={lightboxItem.name} fill draggable={false} sizes="96vw" className="object-contain" />
+                    <Image src={lightboxItem.src} alt={lightboxItem.alt} fill loading="eager" draggable={false} sizes="96vw" className="object-contain" />
                   </motion.div>
                 </AnimatePresence>
                 {total > 1 && (
@@ -495,6 +504,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
             alt="Armored Pangolin precision engineering workshop with a CNC plasma cutter, CAD station and the Namib coast"
             fill
             priority
+            fetchPriority="high"
             sizes="100vw"
             className="editorial-hero-image"
           />
@@ -527,7 +537,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
           </nav>
           <div className="editorial-header-actions">
             <PersistentAudioControl />
-            <button type="button" onClick={() => setProfileOpen(true)} className="editorial-utility editorial-profile-trigger">
+            <button type="button" onClick={() => setProfileOpen(true)} className="editorial-utility editorial-profile-trigger" aria-haspopup="dialog" aria-expanded={profileOpen}>
               Company profile
             </button>
             <button
@@ -686,6 +696,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
                 src="/brand/press-brake-workshop-v2-hd.webp"
                 alt="Industrial press brake and precision bending tooling inside a Swakopmund fabrication workshop"
                 fill
+                loading="lazy"
                 sizes="(max-width: 767px) 100vw, 68vw"
                 className="object-cover"
               />
@@ -708,6 +719,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
             src="/brand/cad-engineering-workstation-v1-hd.webp"
             alt="High-end CAD engineering workstation displaying a production-ready folded steel assembly"
             fill
+            loading="lazy"
             sizes="100vw"
             className="object-cover object-center"
           />
@@ -729,6 +741,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
                 src="/brand/welding-workshop-v2-hd.webp"
                 alt="Close three-quarter view of a professional welding and fit-up bay inside a Swakopmund workshop"
                 fill
+                loading="lazy"
                 sizes="(max-width: 767px) 100vw, 68vw"
                 className="object-cover"
               />
@@ -837,7 +850,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
           </div>
         </div>
         <div className="editorial-shell editorial-footer-base">
-          <Image src="/brand/logo-lockup-transparent.png" alt="Armored Pangolin" width={1500} height={616} className="h-auto w-48" />
+          <Image src="/brand/logo-lockup-transparent.png" alt="Armored Pangolin metal manufacturing" width={1500} height={616} loading="lazy" className="h-auto w-48" />
           <p>{COMPANY.registeredEntity} · Swakopmund, Namibia</p>
         </div>
       </footer>

@@ -28,7 +28,18 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   return {
     title: service.metaTitle,
     description: service.description,
-    alternates: { canonical },
+    keywords: [
+      service.name,
+      `${service.name} Namibia`,
+      `${service.name} Swakopmund`,
+      "metal manufacturing Namibia",
+      "industrial engineering Swakopmund",
+      "Armored Pangolin",
+    ],
+    alternates: {
+      canonical,
+      languages: { "en-NA": canonical },
+    },
     category: "Industrial engineering and metal manufacturing",
     robots: { index: true, follow: true },
     openGraph: {
@@ -61,19 +72,48 @@ export default async function ServicePageRoute({ params }: ServicePageProps) {
         "@type": "Service",
         "@id": `${pageUrl}#service`,
         name: service.name,
+        serviceType: service.name,
         description: service.description,
         url: pageUrl,
         image: `${siteUrl}${service.image}`,
+        mainEntityOfPage: { "@id": `${pageUrl}#webpage` },
         provider: { "@id": `${siteUrl}/#business` },
         areaServed: ["Swakopmund", "Walvis Bay", "Erongo", "Namibia"],
+        audience: {
+          "@type": "Audience",
+          audienceType: "Industrial, mining, commercial and private clients in Namibia",
+        },
+        availableChannel: {
+          "@type": "ServiceChannel",
+          serviceUrl: `${siteUrl}/start-a-project/`,
+          servicePhone: {
+            "@type": "ContactPoint",
+            telephone: "+264815519040",
+            contactType: "project enquiries",
+          },
+        },
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        url: pageUrl,
+        name: service.metaTitle,
+        description: service.description,
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: { "@id": `${pageUrl}#service` },
+        breadcrumb: { "@id": `${pageUrl}#breadcrumbs` },
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: `${siteUrl}${service.image}`,
+        },
+        inLanguage: "en-NA",
       },
       {
         "@type": "BreadcrumbList",
         "@id": `${pageUrl}#breadcrumbs`,
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-          { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/#capabilities` },
-          { "@type": "ListItem", position: 3, name: service.name, item: pageUrl },
+          { "@type": "ListItem", position: 2, name: service.name, item: pageUrl },
         ],
       },
       {
@@ -94,7 +134,7 @@ export default async function ServicePageRoute({ params }: ServicePageProps) {
 
       <header className="service-header">
         <Link href="/" className="service-brand" aria-label="Armored Pangolin home">
-          <Image src="/brand/logo-lockup-transparent.png" alt="Armored Pangolin" width={1500} height={616} priority />
+          <Image src="/brand/logo-lockup-transparent.png" alt="Armored Pangolin metal manufacturing" width={1500} height={616} loading="eager" />
         </Link>
         <nav aria-label="Service page navigation">
           <Link href="/#capabilities">All services</Link>
@@ -109,7 +149,7 @@ export default async function ServicePageRoute({ params }: ServicePageProps) {
 
       <section className="service-hero">
         <div className="service-hero-media">
-          <Image src={service.image} alt={service.imageAlt} fill priority sizes="100vw" />
+          <Image src={service.image} alt={service.imageAlt} fill priority fetchPriority="high" sizes="100vw" />
         </div>
         <div className="service-hero-shade" />
         <div className="service-hero-copy">

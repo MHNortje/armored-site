@@ -10,28 +10,71 @@ import { SERVICE_PAGES } from "@/lib/service-pages";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.armoredpangolin.com";
 
 export const metadata: Metadata = {
-  title: "Start a Project",
-  description: "Send Armored Pangolin the details, drawings and requirements for your steel engineering or fabrication project.",
-  alternates: { canonical: "/start-a-project/" },
+  title: "Request a Metal Fabrication Quote",
+  description: "Request a quote from Armored Pangolin for CNC plasma cutting, steel fabrication, welding, bending, machining or CAD design in Swakopmund.",
+  keywords: [
+    "steel fabrication quote Namibia",
+    "CNC plasma cutting quote Swakopmund",
+    "custom metalwork Namibia",
+    "engineering project Swakopmund",
+  ],
+  alternates: {
+    canonical: "/start-a-project/",
+    languages: { "en-NA": "/start-a-project/" },
+  },
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Start a Steel Engineering Project | Armored Pangolin",
-    description: "Send your project brief to Armored Pangolin in Swakopmund, Namibia.",
+    title: "Request a Metal Fabrication Quote | Armored Pangolin",
+    description: "Send your metal manufacturing or engineering project brief to Armored Pangolin in Swakopmund, Namibia.",
     type: "website",
     url: "/start-a-project/",
     images: [{ url: "/og.png", width: 1200, height: 630, alt: "Armored Pangolin engineering workshop" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Request a Metal Fabrication Quote | Armored Pangolin",
+    description: "Send your project brief to Armored Pangolin in Swakopmund, Namibia.",
+    images: ["/og.png"],
   },
 };
 
 export default function StartProjectPage() {
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "@id": `${siteUrl}/start-a-project/#contact-page`,
-    url: `${siteUrl}/start-a-project/`,
-    name: "Start a project with Armored Pangolin",
-    description: "Request a quotation for steel engineering, design and fabrication in Swakopmund, Namibia.",
-    about: { "@id": `${siteUrl}/#business` },
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": `${siteUrl}/start-a-project/#contact-page`,
+        url: `${siteUrl}/start-a-project/`,
+        name: "Request a metal fabrication quote from Armored Pangolin",
+        description: "Request a quotation for steel engineering, design and fabrication in Swakopmund, Namibia.",
+        about: { "@id": `${siteUrl}/#business` },
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        breadcrumb: { "@id": `${siteUrl}/start-a-project/#breadcrumbs` },
+        mainEntity: {
+          "@type": "ContactPoint",
+          telephone: "+264815519040",
+          email: "armoredpangolin.info@gmail.com",
+          contactType: "project enquiries",
+          areaServed: "NA",
+          availableLanguage: "English",
+        },
+        inLanguage: "en-NA",
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${siteUrl}/start-a-project/#breadcrumbs`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Start a project",
+            item: `${siteUrl}/start-a-project/`,
+          },
+        ],
+      },
+    ],
   };
 
   return (
@@ -39,7 +82,7 @@ export default function StartProjectPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
       <header className="project-header editorial-shell">
         <Link href="/" className="project-brand" aria-label="Armored Pangolin home">
-          <Image src="/brand/logo-lockup-transparent.png" alt="Armored Pangolin" width={1500} height={616} priority />
+          <Image src="/brand/logo-lockup-transparent.png" alt="Armored Pangolin metal manufacturing" width={1500} height={616} loading="eager" />
         </Link>
         <div className="project-header-actions">
           <PersistentAudioControl className="editorial-utility project-audio-control" />
