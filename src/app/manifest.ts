@@ -15,13 +15,13 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "en-NA",
     icons: [
       {
-        src: "/icon.png",
-        sizes: "64x64",
+        src: "/pangolin-favicon-192.png",
+        sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "/apple-icon.png",
-        sizes: "180x180",
+        src: "/pangolin-favicon-512.png",
+        sizes: "512x512",
         type: "image/png",
       },
     ],

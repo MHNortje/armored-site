@@ -37,6 +37,28 @@ export const metadata: Metadata = {
   publisher: "Armored Pangolin",
   category: "Industrial engineering and steel fabrication",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      {
+        url: "/favicon.ico",
+        sizes: "64x64",
+        type: "image/x-icon",
+      },
+      {
+        url: "/pangolin-favicon-64.png",
+        sizes: "64x64",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
   formatDetection: {
     email: false,
     address: false,
