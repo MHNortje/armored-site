@@ -6,18 +6,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, MapPin, Maximize2, Menu, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, MapPin, Maximize2, Menu, RotateCcw, X, ZoomIn, ZoomOut } from "lucide-react";
 import { PersistentAudioControl } from "@/components/ui/persistent-audio";
 import { COMPANY, INDUSTRIES, PROCESS, SERVICES } from "@/lib/company";
 import { portfolioImageAlt, type GalleryImage } from "@/lib/gallery";
+import type { ProductModel } from "@/lib/product-models";
 
 const CompanyProfile = dynamic(
   () => import("@/components/ui/company-profile").then((module) => module.CompanyProfile),
   { ssr: false },
 );
 
+const ProductShowroom = dynamic(
+  () => import("@/components/showroom/product-showroom").then((module) => module.ProductShowroom),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="product-showroom-loading" role="status">
+        <span /> Preparing the interactive product viewer…
+      </div>
+    ),
+  },
+);
+
 type SiteHudProps = {
   galleryImages: GalleryImage[];
+  productModels: ProductModel[];
 };
 
 const fallbackWork = [
@@ -103,7 +117,7 @@ function wrapIndex(index: number, length: number) {
   return (index + length) % length;
 }
 
-function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
+function ShowcaseCarousel({ galleryImages }: { galleryImages: GalleryImage[] }) {
   const items: ShowcaseItem[] = galleryImages.length > 0
     ? galleryImages.map((image) => ({
         id: image.id,
@@ -125,6 +139,7 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [lightboxScale, setLightboxScale] = useState(1);
   const cardDragged = useRef(false);
   const total = items.length;
   const activeItem = items[activeIndex];
@@ -142,6 +157,11 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
     setDirection(step);
     setActiveIndex(next);
     setLightboxIndex(next);
+    setLightboxScale(1);
+  };
+
+  const zoomLightbox = (amount: number) => {
+    setLightboxScale((current) => Math.min(4, Math.max(1, Number((current + amount).toFixed(2)))));
   };
 
   useEffect(() => {
@@ -149,7 +169,10 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
 
     const previousOverflow = document.body.style.overflow;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setLightboxIndex(null);
+      if (event.key === "Escape") {
+        setLightboxIndex(null);
+        setLightboxScale(1);
+      }
       if (event.key === "ArrowLeft") {
         event.preventDefault();
         setDirection(-1);
@@ -213,7 +236,10 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
                 window.setTimeout(() => { cardDragged.current = false; }, 0);
               }}
               onClick={() => {
-                if (!cardDragged.current) setLightboxIndex(activeIndex);
+                if (!cardDragged.current) {
+                  setLightboxScale(1);
+                  setLightboxIndex(activeIndex);
+                }
               }}
               aria-label={`Open ${activeItem.name} in the image viewer`}
             >
@@ -261,7 +287,7 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.24 }}
-            onClick={() => setLightboxIndex(null)}
+            onClick={() => { setLightboxIndex(null); setLightboxScale(1); }}
           >
             <motion.div
               className="editorial-lightbox"
@@ -279,11 +305,30 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
                   <span>{String((lightboxIndex ?? 0) + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
                   <strong>{lightboxItem.name}</strong>
                 </div>
-                <button type="button" onClick={() => setLightboxIndex(null)} autoFocus aria-label="Close image viewer">
-                  <X aria-hidden="true" />
-                </button>
+                <div className="editorial-lightbox-actions">
+                  <button type="button" onClick={() => zoomLightbox(-0.5)} disabled={lightboxScale <= 1} aria-label="Zoom out of image">
+                    <ZoomOut aria-hidden="true" />
+                  </button>
+                  <output aria-live="polite" aria-label="Image zoom level">{Math.round(lightboxScale * 100)}%</output>
+                  <button type="button" onClick={() => zoomLightbox(0.5)} disabled={lightboxScale >= 4} aria-label="Zoom into image">
+                    <ZoomIn aria-hidden="true" />
+                  </button>
+                  <button type="button" onClick={() => setLightboxScale(1)} disabled={lightboxScale === 1} aria-label="Reset image zoom">
+                    <RotateCcw aria-hidden="true" />
+                  </button>
+                  <button type="button" onClick={() => { setLightboxIndex(null); setLightboxScale(1); }} autoFocus aria-label="Close image viewer">
+                    <X aria-hidden="true" />
+                  </button>
+                </div>
               </div>
-              <div className="editorial-lightbox-media">
+              <div
+                className="editorial-lightbox-media"
+                data-zoomed={lightboxScale > 1}
+                onWheel={(event) => {
+                  event.preventDefault();
+                  zoomLightbox(event.deltaY < 0 ? 0.25 : -0.25);
+                }}
+              >
                 <AnimatePresence initial={false} custom={direction} mode="wait">
                   <motion.div
                     key={lightboxItem.id}
@@ -292,19 +337,31 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: direction > 0 ? -36 : 36, opacity: 0 }}
                     transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                    drag={total > 1 ? "x" : false}
-                    dragConstraints={{ left: 0, right: 0 }}
+                    drag={lightboxScale > 1 ? true : total > 1 ? "x" : false}
+                    dragConstraints={lightboxScale > 1 ? {
+                      left: -420 * (lightboxScale - 1),
+                      right: 420 * (lightboxScale - 1),
+                      top: -260 * (lightboxScale - 1),
+                      bottom: 260 * (lightboxScale - 1),
+                    } : { left: 0, right: 0 }}
                     dragElastic={0.12}
                     onDragEnd={(_, info) => {
+                      if (lightboxScale > 1) return;
                       const intention = info.offset.x + info.velocity.x * 0.1;
                       if (intention < -60) moveLightbox(1);
                       if (intention > 60) moveLightbox(-1);
                     }}
                   >
-                    <Image src={lightboxItem.src} alt={lightboxItem.alt} fill loading="eager" draggable={false} sizes="96vw" className="object-contain" />
+                    <motion.div
+                      className="editorial-lightbox-zoom-plane"
+                      animate={{ scale: lightboxScale }}
+                      transition={{ type: "spring", stiffness: 240, damping: 28 }}
+                    >
+                      <Image src={lightboxItem.src} alt={lightboxItem.alt} fill loading="eager" draggable={false} sizes="96vw" className="object-contain" />
+                    </motion.div>
                   </motion.div>
                 </AnimatePresence>
-                {total > 1 && (
+                {total > 1 && lightboxScale === 1 && (
                   <>
                     <button type="button" className="editorial-lightbox-previous" onClick={() => moveLightbox(-1)} aria-label="Previous image">
                       <ArrowLeft aria-hidden="true" />
@@ -323,7 +380,7 @@ function ShowcaseCarousel({ galleryImages }: SiteHudProps) {
   );
 }
 
-export function SiteHud({ galleryImages }: SiteHudProps) {
+export function SiteHud({ galleryImages, productModels }: SiteHudProps) {
   const router = useRouter();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -531,8 +588,9 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
           <BrandLockup />
           <nav className="editorial-nav" aria-label="Primary navigation">
             <a href="#capabilities">Capabilities</a>
-            <a href="#process">Process</a>
             <a href="#work">Work</a>
+            <a href="#products">3D Products</a>
+            <a href="#process">Process</a>
             <a href="#contact">Contact</a>
           </nav>
           <div className="editorial-header-actions">
@@ -587,8 +645,9 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
                 <div className="editorial-mobile-nav-links">
                   {[
                     ["Capabilities", "#capabilities"],
-                    ["Process", "#process"],
                     ["Selected work", "#work"],
+                    ["3D products", "#products"],
+                    ["Process", "#process"],
                     ["Contact", "#contact"],
                   ].map(([label, href], index) => (
                     <a key={href} href={href} onClick={() => setMobileNavOpen(false)}>
@@ -657,11 +716,37 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
         </div>
       </section>
 
+      <section id="work" className="editorial-section editorial-section-dark editorial-work-near-top">
+        <div className="editorial-shell">
+          <div className="editorial-section-heading">
+            <div>
+              <p className="editorial-kicker">02 · Selected work</p>
+              <h2>Full-frame project photography. Nothing cropped away.</h2>
+            </div>
+            <p>Swipe through recent work, open any photograph full-screen, then zoom and pan into the fabrication details.</p>
+          </div>
+          <ShowcaseCarousel galleryImages={galleryImages} />
+        </div>
+      </section>
+
+      <section id="products" className="editorial-section editorial-products-section" aria-labelledby="products-title">
+        <div className="editorial-shell">
+          <div className="editorial-section-heading editorial-section-heading-light">
+            <div>
+              <p className="editorial-kicker">03 · Interactive products</p>
+              <h2 id="products-title">Inspect the engineering from every angle.</h2>
+            </div>
+            <p>Rotate, zoom and pan around Armored Pangolin products. STEP models display engineering geometry; material-rich GLB companions preserve the intended presentation finish.</p>
+          </div>
+          <ProductShowroom models={productModels} />
+        </div>
+      </section>
+
       <section id="capabilities" className="editorial-section editorial-section-dark">
         <div className="editorial-shell">
           <div className="editorial-section-heading">
             <div>
-              <p className="editorial-kicker">02 · Capabilities</p>
+              <p className="editorial-kicker">04 · Capabilities</p>
               <h2>Precision across the complete manufacturing conversation.</h2>
             </div>
             <p>
@@ -776,7 +861,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
         <div className="editorial-shell">
           <div className="editorial-section-heading editorial-section-heading-light">
             <div>
-              <p className="editorial-kicker">03 · Process</p>
+              <p className="editorial-kicker">05 · Process</p>
               <h2>A disciplined route from problem to finished product.</h2>
             </div>
             <p>Every stage stays connected to the manufacturing outcome.</p>
@@ -793,23 +878,10 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
         </div>
       </section>
 
-      <section id="work" className="editorial-section editorial-section-dark">
-        <div className="editorial-shell">
-          <div className="editorial-section-heading">
-            <div>
-              <p className="editorial-kicker">04 · Selected work</p>
-              <h2>The standard should be visible in the finish.</h2>
-            </div>
-            <p>Recent project photographs uploaded by the Armored Pangolin team appear here automatically.</p>
-          </div>
-          <ShowcaseCarousel galleryImages={galleryImages} />
-        </div>
-      </section>
-
       <section className="editorial-section editorial-namibia">
         <div className="editorial-shell editorial-namibia-layout">
           <div>
-            <p className="editorial-kicker">05 · Namibia</p>
+            <p className="editorial-kicker">06 · Namibia</p>
             <h2>Coastal precision.<br />National capability.</h2>
             <p className="editorial-body-copy">
               Built in Swakopmund between the Namib and the Atlantic, our work supports operations where durability, access and practical thinking matter.
@@ -846,7 +918,7 @@ export function SiteHud({ galleryImages }: SiteHudProps) {
             <button type="button" onClick={() => setProfileOpen(true)} className="editorial-button editorial-button-outline">
               Read company profile
             </button>
-            <Link href="/admin/" className="editorial-admin-link">Portfolio admin</Link>
+            <Link href="/admin/" className="editorial-admin-link">Media & 3D admin</Link>
           </div>
         </div>
         <div className="editorial-shell editorial-footer-base">

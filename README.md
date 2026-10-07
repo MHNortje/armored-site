@@ -1,6 +1,6 @@
 # Armored Pangolin Portfolio
 
-High-end editorial Next.js portfolio for Armored Pangolin, Swakopmund. The project includes restrained workshop animation, a detailed project-enquiry route, a Supabase-backed portfolio gallery, and a protected phone/desktop upload portal.
+High-end editorial Next.js portfolio for Armored Pangolin, Swakopmund. The project includes restrained workshop animation, a detailed project-enquiry route, a full-resolution Supabase gallery, an interactive STEP/GLB product showroom, and a protected phone/desktop media portal.
 
 ## Start locally
 
@@ -15,9 +15,17 @@ Open [http://localhost:3000](http://localhost:3000). The admin portal is at `/ad
 
 The static project form opens a fully prepared email draft addressed to `armoredpangolin.info@gmail.com`. Visitors attach any drawings in their email app before sending.
 
-## Portfolio uploads
+## Gallery and 3D product uploads
 
-Follow [SUPABASE_SETUP.md](./SUPABASE_SETUP.md), then add the two public project values to `.env.local` and Cloudflare Pages. Supabase Auth and Storage policies protect uploads; the public gallery refreshes automatically.
+Follow [SUPABASE_SETUP.md](./SUPABASE_SETUP.md), then add the two public project values to `.env.local` and Cloudflare Pages. Supabase Auth and Storage policies protect uploads; the public gallery and 3D showroom refresh automatically.
+
+The model workflow uses:
+
+- STEP or STP as the required engineering source, rendered in the browser with OpenCascade.
+- GLB as an optional presentation companion for Inventor materials and texture maps.
+- JPG, PNG or WebP as an optional product-selector cover.
+
+STEP reliably carries geometry and basic face colours, but it does not normally embed Inventor texture bitmaps. Exporting a GLB companion is the recommended route when the exact visual material finish matters.
 
 ## Varien Regular
 

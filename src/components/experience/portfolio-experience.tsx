@@ -3,29 +3,35 @@
 import { useEffect, useState } from "react";
 import { SiteHud } from "@/components/ui/site-hud";
 import type { GalleryImage } from "@/lib/gallery";
-import { listPortfolioImages } from "@/lib/supabase";
+import type { ProductModel } from "@/lib/product-models";
+import { listPortfolioImages, listProductModels } from "@/lib/supabase";
 
 export function PortfolioExperience() {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [productModels, setProductModels] = useState<ProductModel[]>([]);
 
   useEffect(() => {
     let interval: number | undefined;
-    const refreshGallery = async () => {
+    const refreshMedia = async () => {
       try {
-        const data = await listPortfolioImages();
-        setGalleryImages(data.files);
+        const [galleryResult, modelResult] = await Promise.all([
+          listPortfolioImages(),
+          listProductModels(),
+        ]);
+        setGalleryImages(galleryResult.files);
+        setProductModels(modelResult.files);
       } catch {
-        // The designed workshop crops remain visible until storage is configured.
+        // Designed fallback work remains visible until storage is configured.
       }
     };
 
     // Keep the hero's critical render path free from portfolio-storage work.
     const initialRefresh = window.setTimeout(() => {
-      void refreshGallery();
-      interval = window.setInterval(refreshGallery, 30_000);
+      void refreshMedia();
+      interval = window.setInterval(refreshMedia, 30_000);
     }, 900);
     const onVisible = () => {
-      if (document.visibilityState === "visible") void refreshGallery();
+      if (document.visibilityState === "visible") void refreshMedia();
     };
     document.addEventListener("visibilitychange", onVisible);
     return () => {
@@ -35,5 +41,5 @@ export function PortfolioExperience() {
     };
   }, []);
 
-  return <SiteHud galleryImages={galleryImages} />;
+  return <SiteHud galleryImages={galleryImages} productModels={productModels} />;
 }

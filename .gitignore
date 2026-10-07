@@ -17,6 +17,7 @@
 /.next/
 /.next-stale-static-export/
 /out/
+/public/occt/
 
 # production
 /build

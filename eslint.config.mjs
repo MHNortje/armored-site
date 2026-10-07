@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
     ".next-stale-static-export/**",
     "out/**",
     "build/**",
+    "public/occt/**",
     "next-env.d.ts",
   ]),
 ]);
