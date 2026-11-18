@@ -5,6 +5,8 @@ import { SERVICE_PAGES } from "@/lib/service-pages";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.armoredpangolin.com";
+const siteDescription =
+  "Armored Pangolin manufactures metal products in Swakopmund, Namibia: CNC plasma cutting, steel fabrication, bending, welding, machining and CAD design.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -12,8 +14,7 @@ export const metadata: Metadata = {
     default: "Armored Pangolin | Metal Manufacturing Namibia",
     template: "%s | Armored Pangolin",
   },
-  description:
-    "Metal manufacturing in Swakopmund: CNC plasma cutting, steel fabrication, press-brake bending, welding, machining and 3D CAD design for Namibia.",
+  description: siteDescription,
   alternates: {
     canonical: "/",
   },
@@ -67,8 +68,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Armored Pangolin | From Concept to Steel",
-    description:
-      "Steel engineering, CNC plasma cutting, CAD design and fabrication—built in Swakopmund for Namibia's industrial, commercial and mining sectors.",
+    description: siteDescription,
     type: "website",
     locale: "en_NA",
     siteName: "Armored Pangolin",
@@ -85,8 +85,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Armored Pangolin | From Concept to Steel",
-    description:
-      "Steel engineering, CNC plasma cutting, CAD design and fabrication from Swakopmund, Namibia.",
+    description: siteDescription,
     images: ["/og.png"],
   },
   robots: {
@@ -118,12 +117,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "@type": ["LocalBusiness", "ProfessionalService"],
         "@id": `${siteUrl}/#business`,
         name: "Armored Pangolin",
+        alternateName: "Armored Pangolin Namibia",
         legalName: "Herda Investments CC",
         url: siteUrl,
         logo: `${siteUrl}/brand/logo-lockup-transparent.png`,
         image: [`${siteUrl}/og.png`, `${siteUrl}/brand/workshop-hero-4k-v6.webp`],
-        description:
-          "Metal manufacturing, steel fabrication, CNC plasma cutting, press-brake bending, welding, machining and 3D CAD design from Swakopmund, Namibia.",
+        description: siteDescription,
         slogan: "Engineering. Steel fabrication. Design. Perfection.",
         email: "armoredpangolin.info@gmail.com",
         telephone: "+264815519040",
@@ -183,8 +182,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         url: siteUrl,
         name: "Armored Pangolin",
         alternateName: "Armored Pangolin Namibia",
-        description:
-          "Metal manufacturing, CNC plasma cutting, steel fabrication and engineering design in Swakopmund, Namibia.",
+        description: siteDescription,
         publisher: { "@id": `${siteUrl}/#business` },
         inLanguage: "en-NA",
       },

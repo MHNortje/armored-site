@@ -3,6 +3,7 @@ import { SERVICE_PAGES } from "@/lib/service-pages";
 
 const siteUrl = "https://www.armoredpangolin.com";
 const lastContentUpdate = new Date("2026-08-23T00:00:00+02:00");
+const homepageContentUpdate = new Date("2026-11-18T00:00:00+02:00");
 
 const homepageImages = [
   "/brand/workshop-hero-4k-v6.webp",
@@ -31,7 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: siteUrl,
-      lastModified: lastContentUpdate,
+      lastModified: homepageContentUpdate,
       changeFrequency: "monthly",
       priority: 1,
       images: homepageImages,
