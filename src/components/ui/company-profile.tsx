@@ -44,16 +44,16 @@ export function CompanyProfile({ onClose, onQuote }: CompanyProfileProps) {
         exit={{ y: 18, opacity: 0 }}
         transition={{ duration: 0.24, ease: "easeOut" }}
       >
-        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/8 bg-[#171719]/82 px-5 py-4 backdrop-blur-xl sm:px-8 lg:px-12">
+        <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-white/8 bg-[#171719]/82 px-5 py-4 backdrop-blur-xl sm:px-8 lg:px-12">
           <Image
             src="/brand/logo-lockup-transparent.png"
             alt="Armored Pangolin metal manufacturing"
             width={1500}
             height={616}
             loading="eager"
-            className="h-auto w-44 sm:w-56"
+            className="h-auto w-32 min-w-0 sm:w-44 lg:w-56"
           />
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <PersistentAudioControl className="editorial-utility profile-audio-control" />
             <button type="button" onClick={onQuote} className="profile-quote-button profile-header-quote">
               Request a quote <ArrowUpRight className="h-4 w-4" aria-hidden="true" />

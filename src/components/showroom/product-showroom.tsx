@@ -10,6 +10,7 @@ import * as THREE from "three";
 import { productModelAlt, type ProductModel } from "@/lib/product-models";
 import { loadStepMeshes } from "@/lib/step-loader";
 import { createStepGroup, modelPresentation, type ModelPresentation } from "@/lib/model-presentation";
+import styles from "./product-showroom.module.css";
 
 type View = "3D" | "Front" | "Side" | "Top";
 type CameraActions = { fit: (view?: View) => void; zoom: (factor: number) => void; turn: (angle: number) => void };
@@ -207,7 +208,9 @@ function ProductWorkspace({ model }: { model: ProductModel }) {
   }, []);
   const createRenderer = useCallback((parameters: THREE.WebGLRendererParameters) => {
     try {
-      return new THREE.WebGLRenderer(parameters);
+      const renderer = new THREE.WebGLRenderer({ ...parameters, alpha: true });
+      renderer.setClearColor("#e5e7e9", 0);
+      return renderer;
     } catch (error) {
       // Renderer creation happens asynchronously, outside React's error boundary.
       // Surface a useful message instead of leaving the download spinner running.
@@ -264,11 +267,13 @@ function ProductWorkspace({ model }: { model: ProductModel }) {
       <button type="button" disabled={!ready} onClick={() => { stopRotation(); setUpAxis((axis) => axis === "z" ? "y" : "z"); }} aria-label="Turn model upright"><Rotate3D aria-hidden="true" /> Turn upright</button>
     </div>
     <div className="product-viewer-stage" aria-busy={loading.status === "loading"}>
-      <div className="product-viewer-canvas" style={{ cursor: pan ? "move" : "grab" }}>
+      <div className={`product-viewer-canvas ${styles.viewport}`} style={{ cursor: pan ? "move" : "grab" }}>
+        <div className={styles.watermark} aria-hidden="true">
+          <Image src="/brand/logo-lockup-transparent.png" alt="" width={1500} height={616} sizes="160px" draggable={false} className={styles.watermarkLogo} />
+        </div>
         <ViewerBoundary key={`renderer-${attempt}`} fallback={<ModelError onStatus={onStatus} message="The 3D view could not be displayed. Please try again or use another browser." />}>
-        <Canvas gl={createRenderer} frameloop="demand" dpr={[1, 1.5]} camera={{ position: [6, 3.9, 6], fov: 38, near: 0.01, far: 150 }} fallback={<p>Your browser cannot display 3D. Please enable hardware acceleration or try another browser.</p>}>
+        <Canvas className={styles.interactiveCanvas} gl={createRenderer} frameloop="demand" dpr={[1, 1.5]} camera={{ position: [6, 3.9, 6], fov: 38, near: 0.01, far: 150 }} fallback={<p>Your browser cannot display 3D. Please enable hardware acceleration or try another browser.</p>}>
           <ContextMonitor onLost={onGraphicsLost} />
-          <color attach="background" args={["#e5e7e9"]} />
           <StudioLighting />
           <Suspense fallback={null}>
             <ViewerBoundary key={`geometry-${attempt}`} fallback={<ModelError onStatus={onStatus} message="The model geometry could not be displayed. Please try again or choose another product." />}>

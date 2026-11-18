@@ -1,0 +1,28 @@
+COASTAL LIGHT - ORIGINAL AMBIENT LOOP
+
+Created for Armored Pangolin, 18 November 2026.
+
+This is an original, procedurally composed and synthesized recording. It uses
+no third-party recording, instrument sample, commercial song, or borrowed melody.
+The complete composition and synthesis source is included in the repository:
+scripts/generate_coastal_light_soundtrack.py
+
+The generated recording may be used, reproduced, edited and distributed with
+the Armored Pangolin website and its promotional work. No third-party music
+attribution or music subscription is required for this original recording.
+This note does not make a claim about statutory copyright eligibility of
+computer-generated material in any particular jurisdiction.
+
+Arrangement: 120 seconds / 64 BPM / F-major palette. Rounded keys, restrained
+wood-mallet accents, a soft brushed pulse, and a short room reflection. No guitar,
+vocals, choir/organ pads, sustained drone, kick drum or heavy backbeat.
+
+Encoding: stereo MP3, 44.1 kHz, 192 kbps. LAME/Xing metadata records encoder delay
+and padding. Notes and room tails wrap across the musical loop boundary; exact
+gapless playback can still depend on the browser/device media implementation.
+
+Regenerate with Python + NumPy + SciPy and FFmpeg with libmp3lame:
+python scripts/generate_coastal_light_soundtrack.py --ffmpeg PATH_TO_FFMPEG
+
+The generator uses FFmpeg as a separate build-time tool. It is not shipped to
+website visitors. No Python or audio-generation dependency is added to the site.

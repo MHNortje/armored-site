@@ -193,6 +193,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en-NA"
+      data-scroll-behavior="smooth"
       className="antialiased"
     >
       <head>

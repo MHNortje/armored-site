@@ -1,0 +1,39 @@
+.viewport {
+  isolation: isolate;
+}
+
+.watermark {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: grid;
+  place-items: start;
+  padding: 1.25rem;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.watermarkLogo {
+  width: clamp(7.5rem, 12vw, 10rem);
+  height: auto;
+  object-fit: contain;
+  opacity: 1;
+  filter: brightness(0);
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.interactiveCanvas {
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  .watermark {
+    padding: 0.875rem;
+  }
+
+  .watermarkLogo {
+    width: 7.5rem;
+  }
+}

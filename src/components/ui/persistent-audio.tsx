@@ -10,7 +10,7 @@ type PersistentAudioContextValue = {
 
 const PersistentAudioContext = createContext<PersistentAudioContextValue | null>(null);
 const muteStorageKey = "armored-pangolin-audio-muted";
-const positionStorageKey = "armored-pangolin-audio-position-v2";
+const positionStorageKey = "armored-pangolin-audio-position-v3";
 
 export function PersistentAudioProvider({ children }: { children: React.ReactNode }) {
   const audio = useRef<HTMLAudioElement>(null);
@@ -257,7 +257,7 @@ export function PersistentAudioProvider({ children }: { children: React.ReactNod
       {children}
       <audio
         ref={audio}
-        src="/audio/light-workshop-ambient-v2.wav"
+        src="/audio/coastal-light-v3.mp3"
         loop
         preload="auto"
         autoPlay

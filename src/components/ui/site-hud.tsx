@@ -398,7 +398,7 @@ export function SiteHud({ galleryImages, productModels }: SiteHudProps) {
     if (!mobileNavOpen) return;
 
     const previousOverflow = document.body.style.overflow;
-    const desktop = window.matchMedia("(min-width: 1024px)");
+    const desktop = window.matchMedia("(min-width: 1280px)");
     const closeOnDesktop = () => {
       if (desktop.matches) setMobileNavOpen(false);
     };
@@ -431,8 +431,9 @@ export function SiteHud({ galleryImages, productModels }: SiteHudProps) {
       const screenY = 549;
       const screenWidth = 331;
       const screenHeight = 196;
-      const width = hero.clientWidth;
-      const height = hero.clientHeight;
+      const media = hero.querySelector<HTMLElement>(".editorial-hero-media");
+      const width = media?.clientWidth ?? hero.clientWidth;
+      const height = media?.clientHeight ?? hero.clientHeight;
       const coverScale = Math.max(width / sourceWidth, height / sourceHeight);
       const renderedWidth = sourceWidth * coverScale;
       const renderedHeight = sourceHeight * coverScale;
@@ -475,6 +476,8 @@ export function SiteHud({ galleryImages, productModels }: SiteHudProps) {
       placeCadScreen();
     });
     resizeObserver.observe(hero);
+    const heroMedia = hero.querySelector<HTMLElement>(".editorial-hero-media");
+    if (heroMedia) resizeObserver.observe(heroMedia);
     if (statementRef.current) resizeObserver.observe(statementRef.current);
     placePlasmaEffect();
     placeCadScreen();
@@ -694,6 +697,7 @@ export function SiteHud({ galleryImages, productModels }: SiteHudProps) {
           </div>
         </div>
 
+        <div className="editorial-principles-spacer" aria-hidden="true" />
         <div className="editorial-principles" aria-label="Armored Pangolin principles">
           <span>Engineering</span>
           <span>Steel fabrication</span>
