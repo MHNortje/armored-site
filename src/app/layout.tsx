@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { PersistentAudioProvider } from "@/components/ui/persistent-audio";
+import { WeldingTrail } from "@/components/ui/welding-trail";
 import { SERVICE_PAGES } from "@/lib/service-pages";
 import "./globals.css";
 
@@ -206,6 +207,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
         />
         <PersistentAudioProvider>{children}</PersistentAudioProvider>
+        <WeldingTrail />
       </body>
     </html>
   );
